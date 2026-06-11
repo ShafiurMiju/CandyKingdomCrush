@@ -22,6 +22,8 @@ interface GameState {
   busy: boolean;
   /** Candy ids currently animating out (so the Board can pop before unmount). */
   poppingIds: number[];
+  /** The two candy ids currently swapping (animated with emphasis). */
+  swappingIds: number[];
 
   startLevel: (level: LevelConfig) => void;
   setBoard: (board: Board) => void;
@@ -30,6 +32,7 @@ interface GameState {
   setCombo: (combo: number) => void;
   setBusy: (busy: boolean) => void;
   setPopping: (ids: number[]) => void;
+  setSwapping: (ids: number[]) => void;
   setStatus: (status: GameStatus) => void;
   pause: () => void;
   resume: () => void;
@@ -47,6 +50,7 @@ export const useGameStore = create<GameState>(set => ({
   combo: 0,
   busy: false,
   poppingIds: [],
+  swappingIds: [],
 
   startLevel: level =>
     set({
@@ -59,6 +63,7 @@ export const useGameStore = create<GameState>(set => ({
       combo: 0,
       busy: false,
       poppingIds: [],
+      swappingIds: [],
     }),
 
   setBoard: board => set({board}),
@@ -67,6 +72,7 @@ export const useGameStore = create<GameState>(set => ({
   setCombo: combo => set({combo}),
   setBusy: busy => set({busy}),
   setPopping: ids => set({poppingIds: ids}),
+  setSwapping: ids => set({swappingIds: ids}),
   setStatus: status => set({status}),
 
   pause: () => set(state => (state.status === 'playing' ? {status: 'paused'} : {})),
@@ -85,5 +91,6 @@ export const useGameStore = create<GameState>(set => ({
       combo: 0,
       busy: false,
       poppingIds: [],
+      swappingIds: [],
     }),
 }));

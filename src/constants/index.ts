@@ -47,7 +47,7 @@ export function comboMultiplier(combo: number): number {
 // ---------------------------------------------------------------------------
 
 export const ANIM = {
-  swap: 180,
+  swap: 220,
   invalidShake: 320,
   pop: 200,
   fall: 260,

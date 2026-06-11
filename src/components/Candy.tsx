@@ -14,8 +14,10 @@ import React, {useEffect, useRef} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import Animated, {
   Easing,
+  SharedValue,
   useAnimatedStyle,
   useSharedValue,
+  withSequence,
   withTiming,
 } from 'react-native-reanimated';
 
@@ -30,9 +32,31 @@ interface CandyProps {
   col: number;
   /** When true, the candy animates out (cleared) before unmount. */
   popping?: boolean;
+  /** True while the player's finger is on this candy (lifts for feedback). */
+  selected?: boolean;
+  /** True while a drag is pointing at this candy as the swap destination. */
+  targeted?: boolean;
+  /** True while this candy is part of an active swap (emphasised motion). */
+  swapping?: boolean;
+  /** Finger-follow offsets, applied only while this candy is selected. */
+  dragX?: SharedValue<number>;
+  dragY?: SharedValue<number>;
 }
 
-function CandyComponent({cell, row, col, popping}: CandyProps) {
+/** Fraction of the drag offset the targeted candy mirrors (moves to meet it). */
+const TARGET_NUDGE = 0.35;
+
+function CandyComponent({
+  cell,
+  row,
+  col,
+  popping,
+  selected,
+  targeted,
+  swapping,
+  dragX,
+  dragY,
+}: CandyProps) {
   const targetX = col * TILE_SIZE + CANDY_INSET;
   const targetY = row * TILE_SIZE + CANDY_INSET;
 
@@ -42,6 +66,10 @@ function CandyComponent({cell, row, col, popping}: CandyProps) {
   const scale = useSharedValue(0.7);
   const opacity = useSharedValue(0);
   const firstRender = useRef(true);
+
+  // Read inside the position effect without re-triggering it.
+  const swappingRef = useRef(swapping);
+  swappingRef.current = swapping;
 
   // Animate to position on mount (fall-in) and whenever row/col change.
   useEffect(() => {
@@ -56,6 +84,22 @@ function CandyComponent({cell, row, col, popping}: CandyProps) {
       scale.value = withTiming(1, {duration: ANIM.fall});
       return;
     }
+    if (swappingRef.current) {
+      // Player-initiated swap: both axes use the swap easing (gravity easing
+      // would make a vertical swap look like a fall) plus a scale pulse so the
+      // move is unmistakable.
+      const swapConfig = {
+        duration: ANIM.swap,
+        easing: Easing.inOut(Easing.quad),
+      };
+      tx.value = withTiming(targetX, swapConfig);
+      ty.value = withTiming(targetY, swapConfig);
+      scale.value = withSequence(
+        withTiming(1.18, {duration: ANIM.swap / 2}),
+        withTiming(1, {duration: ANIM.swap / 2}),
+      );
+      return;
+    }
     tx.value = withTiming(targetX, {
       duration: ANIM.swap,
       easing: Easing.inOut(Easing.quad),
@@ -65,6 +109,15 @@ function CandyComponent({cell, row, col, popping}: CandyProps) {
       easing: Easing.out(Easing.cubic),
     });
   }, [targetX, targetY, tx, ty, opacity, scale]);
+
+  // Lift while the finger is down so the player sees which candy is grabbed.
+  // Skipped while swapping/popping so it never cancels those scale animations.
+  useEffect(() => {
+    if (firstRender.current || popping || swapping) {
+      return;
+    }
+    scale.value = withTiming(selected ? 1.12 : 1, {duration: 100});
+  }, [selected, popping, swapping, scale]);
 
   // Pop out when cleared.
   useEffect(() => {
@@ -77,18 +130,37 @@ function CandyComponent({cell, row, col, popping}: CandyProps) {
     }
   }, [popping, scale, opacity]);
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [
-      {translateX: tx.value},
-      {translateY: ty.value},
-      {scale: scale.value},
-    ],
-    opacity: opacity.value,
-  }));
+  const animatedStyle = useAnimatedStyle(() => {
+    let followX = 0;
+    let followY = 0;
+    if (selected && dragX && dragY) {
+      followX = dragX.value;
+      followY = dragY.value;
+    } else if (targeted && dragX && dragY) {
+      // Move toward the grabbed candy, previewing the exchange.
+      followX = -dragX.value * TARGET_NUDGE;
+      followY = -dragY.value * TARGET_NUDGE;
+    }
+    return {
+      transform: [
+        {translateX: tx.value + followX},
+        {translateY: ty.value + followY},
+        {scale: scale.value},
+      ],
+      opacity: opacity.value,
+    };
+  });
 
   return (
-    <Animated.View style={[styles.container, animatedStyle]} pointerEvents="none">
+    <Animated.View
+      style={[
+        styles.container,
+        (selected || swapping) && styles.lifted,
+        animatedStyle,
+      ]}
+      pointerEvents="none">
       <CandyFace cell={cell} />
+      {targeted && <View style={styles.targetRing} pointerEvents="none" />}
     </Animated.View>
   );
 }
@@ -179,6 +251,20 @@ const styles = StyleSheet.create({
     top: 0,
     width: CANDY_SIZE,
     height: CANDY_SIZE,
+  },
+  lifted: {
+    zIndex: 10,
+    elevation: 10,
+  },
+  targetRing: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: radius.md,
+    borderWidth: 3,
+    borderColor: 'rgba(255,255,255,0.95)',
+    shadowColor: '#FFFFFF',
+    shadowOpacity: 0.9,
+    shadowRadius: 6,
+    shadowOffset: {width: 0, height: 0},
   },
   tile: {
     flex: 1,

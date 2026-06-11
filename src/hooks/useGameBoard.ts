@@ -75,8 +75,14 @@ export function useGameBoard() {
       store.setBusy(true);
       sound.play('swap');
 
-      // Animate the swap.
+      // Animate the swap. The two ids are flagged so they animate with swap
+      // emphasis (lift + pulse) instead of the default gravity easing.
       const swapped = swapCells(board, from, to);
+      const swapIds = [
+        board[from.row][from.col]?.id,
+        board[to.row][to.col]?.id,
+      ].filter((id): id is number => id != null);
+      store.setSwapping(swapIds);
       store.setBoard(swapped);
       await delay(ANIM.swap);
 
@@ -86,10 +92,12 @@ export function useGameBoard() {
         setInvalidNonce(n => n + 1);
         store.setBoard(board);
         await delay(ANIM.swap);
+        store.setSwapping([]);
         store.setBusy(false);
         busyRef.current = false;
         return;
       }
+      store.setSwapping([]);
 
       // Build resolve options (colour-bomb swaps detonate without a match).
       let options: {
