@@ -1,0 +1,314 @@
+[
+  {
+    "id": 1,
+    "name": "Sweet Start",
+    "objective": "score",
+    "targetScore": 1000,
+    "moves": 25,
+    "starThresholds": [1000, 1600, 2300],
+    "description": "Learn the ropes. Match 3 or more candies."
+  },
+  {
+    "id": 2,
+    "name": "Sugar Rush",
+    "objective": "score",
+    "targetScore": 1500,
+    "moves": 24,
+    "starThresholds": [1500, 2200, 3000],
+    "description": "Chain a few matches together for combos."
+  },
+  {
+    "id": 3,
+    "name": "Candy Lane",
+    "objective": "score",
+    "targetScore": 2000,
+    "moves": 23,
+    "starThresholds": [2000, 2900, 3900],
+    "description": "Make a match of 4 to earn a striped candy."
+  },
+  {
+    "id": 4,
+    "name": "Lollipop Loop",
+    "objective": "score",
+    "targetScore": 2800,
+    "moves": 22,
+    "starThresholds": [2800, 3800, 5000],
+    "description": "Try an L or T shape for a wrapped candy."
+  },
+  {
+    "id": 5,
+    "name": "Gumdrop Gala",
+    "objective": "score",
+    "targetScore": 3500,
+    "moves": 20,
+    "starThresholds": [3500, 4800, 6200],
+    "description": "Five in a row makes a colour bomb!"
+  },
+  {
+    "id": 6,
+    "name": "First Frost",
+    "objective": "clear-ice",
+    "targetScore": 3000,
+    "moves": 24,
+    "starThresholds": [3000, 4200, 5500],
+    "description": "Break the ice by matching candies next to it.",
+    "ice": [
+      {"row": 0, "col": 3, "layers": 1},
+      {"row": 0, "col": 4, "layers": 1},
+      {"row": 7, "col": 3, "layers": 1},
+      {"row": 7, "col": 4, "layers": 1}
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Frozen Corners",
+    "objective": "clear-ice",
+    "targetScore": 3500,
+    "moves": 24,
+    "starThresholds": [3500, 4800, 6300],
+    "description": "Ice in the corners and the heart of the board.",
+    "ice": [
+      {"row": 0, "col": 0, "layers": 1},
+      {"row": 0, "col": 7, "layers": 1},
+      {"row": 7, "col": 0, "layers": 1},
+      {"row": 7, "col": 7, "layers": 1},
+      {"row": 3, "col": 3, "layers": 2},
+      {"row": 4, "col": 4, "layers": 2}
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Icy Ridge",
+    "objective": "clear-ice",
+    "targetScore": 4000,
+    "moves": 22,
+    "starThresholds": [4000, 5400, 7000],
+    "description": "A ridge of ice splits the top row.",
+    "ice": [
+      {"row": 0, "col": 2, "layers": 1},
+      {"row": 0, "col": 3, "layers": 1},
+      {"row": 0, "col": 4, "layers": 1},
+      {"row": 0, "col": 5, "layers": 1},
+      {"row": 1, "col": 3, "layers": 2},
+      {"row": 1, "col": 4, "layers": 2}
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Glacier Garden",
+    "objective": "clear-ice",
+    "targetScore": 4500,
+    "moves": 22,
+    "starThresholds": [4500, 6000, 7800],
+    "description": "Thick double ice guards the centre.",
+    "ice": [
+      {"row": 2, "col": 2, "layers": 2},
+      {"row": 2, "col": 5, "layers": 2},
+      {"row": 5, "col": 2, "layers": 2},
+      {"row": 5, "col": 5, "layers": 2}
+    ]
+  },
+  {
+    "id": 10,
+    "name": "Deep Freeze",
+    "objective": "clear-ice",
+    "targetScore": 5000,
+    "moves": 20,
+    "starThresholds": [5000, 6800, 8800],
+    "description": "A frozen ring locks down the board.",
+    "ice": [
+      {"row": 2, "col": 2, "layers": 2},
+      {"row": 2, "col": 3, "layers": 2},
+      {"row": 2, "col": 4, "layers": 2},
+      {"row": 2, "col": 5, "layers": 2},
+      {"row": 5, "col": 2, "layers": 2},
+      {"row": 5, "col": 3, "layers": 2},
+      {"row": 5, "col": 4, "layers": 2},
+      {"row": 5, "col": 5, "layers": 2}
+    ]
+  },
+  {
+    "id": 11,
+    "name": "Locked In",
+    "objective": "score",
+    "targetScore": 4000,
+    "moves": 20,
+    "starThresholds": [4000, 5400, 7000],
+    "description": "Locked candies won't budge until you match beside them.",
+    "locks": [
+      {"row": 3, "col": 3},
+      {"row": 3, "col": 4},
+      {"row": 4, "col": 3},
+      {"row": 4, "col": 4}
+    ]
+  },
+  {
+    "id": 12,
+    "name": "Chain Gang",
+    "objective": "score",
+    "targetScore": 4500,
+    "moves": 20,
+    "starThresholds": [4500, 6000, 7800],
+    "description": "Locks scattered to every corner.",
+    "locks": [
+      {"row": 0, "col": 0},
+      {"row": 0, "col": 7},
+      {"row": 7, "col": 0},
+      {"row": 7, "col": 7},
+      {"row": 3, "col": 3},
+      {"row": 4, "col": 4}
+    ]
+  },
+  {
+    "id": 13,
+    "name": "Padlock Plaza",
+    "objective": "score",
+    "targetScore": 5000,
+    "moves": 18,
+    "starThresholds": [5000, 6700, 8600],
+    "description": "Tighter moves, more locks.",
+    "locks": [
+      {"row": 2, "col": 3},
+      {"row": 2, "col": 4},
+      {"row": 5, "col": 3},
+      {"row": 5, "col": 4},
+      {"row": 3, "col": 1},
+      {"row": 4, "col": 6}
+    ]
+  },
+  {
+    "id": 14,
+    "name": "Iron Column",
+    "objective": "score",
+    "targetScore": 5500,
+    "moves": 18,
+    "starThresholds": [5500, 7400, 9500],
+    "description": "A locked column cuts the board in two.",
+    "locks": [
+      {"row": 1, "col": 4},
+      {"row": 2, "col": 4},
+      {"row": 3, "col": 4},
+      {"row": 4, "col": 4},
+      {"row": 5, "col": 4}
+    ]
+  },
+  {
+    "id": 15,
+    "name": "Vault",
+    "objective": "score",
+    "targetScore": 6000,
+    "moves": 16,
+    "starThresholds": [6000, 8000, 10200],
+    "description": "Only 16 moves. Plan every swap.",
+    "locks": [
+      {"row": 2, "col": 2},
+      {"row": 2, "col": 5},
+      {"row": 5, "col": 2},
+      {"row": 5, "col": 5},
+      {"row": 3, "col": 3},
+      {"row": 3, "col": 4},
+      {"row": 4, "col": 3},
+      {"row": 4, "col": 4}
+    ]
+  },
+  {
+    "id": 16,
+    "name": "Frostbite Lock",
+    "objective": "clear-ice",
+    "targetScore": 5000,
+    "moves": 18,
+    "starThresholds": [5000, 6700, 8600],
+    "description": "Ice up top, locks down below.",
+    "ice": [
+      {"row": 0, "col": 3, "layers": 2},
+      {"row": 0, "col": 4, "layers": 2},
+      {"row": 1, "col": 3, "layers": 1},
+      {"row": 1, "col": 4, "layers": 1}
+    ],
+    "locks": [
+      {"row": 7, "col": 3},
+      {"row": 7, "col": 4}
+    ]
+  },
+  {
+    "id": 17,
+    "name": "Cocoa Storm",
+    "objective": "clear-chocolate",
+    "targetScore": 5500,
+    "moves": 18,
+    "starThresholds": [5500, 7400, 9500],
+    "description": "Clear the chocolate before it spreads!",
+    "chocolate": [
+      {"row": 3, "col": 3},
+      {"row": 4, "col": 4}
+    ],
+    "ice": [
+      {"row": 0, "col": 0, "layers": 1},
+      {"row": 0, "col": 7, "layers": 1}
+    ]
+  },
+  {
+    "id": 18,
+    "name": "Bittersweet",
+    "objective": "clear-chocolate",
+    "targetScore": 6000,
+    "moves": 16,
+    "starThresholds": [6000, 8000, 10200],
+    "description": "Chocolate and locks, fewer moves.",
+    "chocolate": [
+      {"row": 0, "col": 3},
+      {"row": 7, "col": 4}
+    ],
+    "locks": [
+      {"row": 3, "col": 0},
+      {"row": 4, "col": 7}
+    ]
+  },
+  {
+    "id": 19,
+    "name": "Sugar Siege",
+    "objective": "clear-ice",
+    "targetScore": 6500,
+    "moves": 16,
+    "starThresholds": [6500, 8700, 11000],
+    "description": "Every obstacle stands between you and the ice.",
+    "ice": [
+      {"row": 2, "col": 3, "layers": 2},
+      {"row": 2, "col": 4, "layers": 2},
+      {"row": 5, "col": 3, "layers": 2},
+      {"row": 5, "col": 4, "layers": 2}
+    ],
+    "locks": [
+      {"row": 3, "col": 0},
+      {"row": 4, "col": 7}
+    ],
+    "chocolate": [
+      {"row": 0, "col": 0}
+    ]
+  },
+  {
+    "id": 20,
+    "name": "Kingdom's Crown",
+    "objective": "clear-chocolate",
+    "targetScore": 7500,
+    "moves": 15,
+    "starThresholds": [7500, 10000, 12800],
+    "description": "The final gauntlet. Good luck, Candy Monarch!",
+    "chocolate": [
+      {"row": 0, "col": 0},
+      {"row": 7, "col": 7}
+    ],
+    "ice": [
+      {"row": 0, "col": 3, "layers": 2},
+      {"row": 0, "col": 4, "layers": 2},
+      {"row": 7, "col": 3, "layers": 2},
+      {"row": 7, "col": 4, "layers": 2}
+    ],
+    "locks": [
+      {"row": 3, "col": 3},
+      {"row": 3, "col": 4},
+      {"row": 4, "col": 3},
+      {"row": 4, "col": 4}
+    ]
+  }
+]
