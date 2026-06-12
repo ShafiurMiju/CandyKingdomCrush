@@ -3,13 +3,13 @@ import {BackHandler, StyleSheet, View} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
+import AppBackground from '../components/AppBackground';
 import Board from '../components/Board';
 import ComboToast from '../components/ComboToast';
 import GameHUD from '../components/GameHUD';
 import LoseOverlay from '../components/LoseOverlay';
 import PauseOverlay from '../components/PauseOverlay';
 import WinOverlay from '../components/WinOverlay';
-import {palette} from '../constants/theme';
 import {useGameBoard} from '../hooks/useGameBoard';
 import {useSound} from '../hooks/useSound';
 import {getLevel, nextLevelId} from '../levels';
@@ -78,40 +78,41 @@ export default function GameScreen({navigation, route}: ScreenProps<'Game'>) {
   }, [navigation, next]);
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      <GameHUD onPause={pause} />
+    <AppBackground>
+      <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+        <GameHUD onPause={pause} />
 
-      <View style={styles.boardWrap}>
-        <Board onSwipe={onSwipe} invalidNonce={invalidNonce} />
-      </View>
+        <View style={styles.boardWrap}>
+          <Board onSwipe={onSwipe} invalidNonce={invalidNonce} />
+        </View>
 
-      <ComboToast />
+        <ComboToast />
 
-      {status === 'paused' && (
-        <PauseOverlay
-          onResume={resume}
-          onRestart={restart}
-          onHome={goToLevels}
-        />
-      )}
-      {status === 'won' && (
-        <WinOverlay
-          onNext={next != null ? goNext : null}
-          onReplay={restart}
-          onHome={goToLevels}
-        />
-      )}
-      {status === 'lost' && (
-        <LoseOverlay onRetry={restart} onHome={goToLevels} />
-      )}
-    </SafeAreaView>
+        {status === 'paused' && (
+          <PauseOverlay
+            onResume={resume}
+            onRestart={restart}
+            onHome={goToLevels}
+          />
+        )}
+        {status === 'won' && (
+          <WinOverlay
+            onNext={next != null ? goNext : null}
+            onReplay={restart}
+            onHome={goToLevels}
+          />
+        )}
+        {status === 'lost' && (
+          <LoseOverlay onRetry={restart} onHome={goToLevels} />
+        )}
+      </SafeAreaView>
+    </AppBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: palette.bgTop,
   },
   boardWrap: {
     flex: 1,

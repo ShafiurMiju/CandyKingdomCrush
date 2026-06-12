@@ -7,22 +7,22 @@
 import {CandyColor} from '../types';
 
 export const palette = {
-  bgTop: '#3A1078',
-  bgBottom: '#4E31AA',
-  panel: '#2E0B6E',
-  panelLight: '#5B2EC4',
-  accent: '#FFD93D',
-  accentDark: '#F4A300',
-  text: '#FFFFFF',
-  textMuted: '#C9B9F2',
-  success: '#6BCB77',
-  danger: '#FF5D6C',
-  star: '#FFD93D',
-  starEmpty: '#5B4A8A',
-  boardBg: '#27065C',
-  cellEven: '#3D1A86',
-  cellOdd: '#45219A',
-  overlay: 'rgba(20, 4, 52, 0.82)',
+  bgTop: '#FFF1F6', // app background — soft near-white pink (no violet)
+  bgBottom: '#FFE3EE',
+  panel: '#FFFFFF', // cards / surfaces
+  panelLight: '#FFD7E6', // soft pink — secondary surfaces, borders, badges
+  accent: '#FF4D8D', // candy pink — primary buttons & highlights
+  accentDark: '#E03A77',
+  text: '#3A322E', // warm dark text for light backgrounds
+  textMuted: '#9A8F86',
+  success: '#3DB36B',
+  danger: '#FF5260',
+  star: '#FFC42E', // gold star
+  starEmpty: '#E6DCE2',
+  boardBg: '#FFFFFF',
+  cellEven: '#FFF1F6',
+  cellOdd: '#FCE2EC',
+  overlay: 'rgba(38, 26, 34, 0.74)',
 };
 
 /** Per-candy-colour fill and glyph. Index === CandyColor. */
@@ -32,12 +32,12 @@ export const CANDY_THEME: {
   glyph: string;
   name: string;
 }[] = [
-  {color: '#FF4D6D', light: '#FF8FA3', glyph: '🍓', name: 'Strawberry'},
-  {color: '#FF9F45', light: '#FFC178', glyph: '🍊', name: 'Orange'},
-  {color: '#FFD93D', light: '#FFE98A', glyph: '🍋', name: 'Lemon'},
-  {color: '#6BCB77', light: '#A7E0AE', glyph: '🍏', name: 'Apple'},
-  {color: '#4D96FF', light: '#92BFFF', glyph: '🫐', name: 'Blueberry'},
-  {color: '#9B5DE5', light: '#C19BF0', glyph: '🍇', name: 'Grape'},
+  {color: '#FF4D6D', light: '#FF8FA3', glyph: '🍭', name: 'Lollipop'},
+  {color: '#FF9F45', light: '#FFC178', glyph: '🍩', name: 'Donut'},
+  {color: '#FFD93D', light: '#FFE98A', glyph: '🍪', name: 'Cookie'},
+  {color: '#6BCB77', light: '#A7E0AE', glyph: '🍬', name: 'Bonbon'},
+  {color: '#4D96FF', light: '#92BFFF', glyph: '🍦', name: 'Ice Cream'},
+  {color: '#9B5DE5', light: '#C19BF0', glyph: '🧁', name: 'Cupcake'},
 ];
 
 export function candyTheme(color: CandyColor) {

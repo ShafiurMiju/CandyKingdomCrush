@@ -110,8 +110,11 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
     backgroundColor: palette.panel,
     borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: palette.panelLight,
     paddingVertical: spacing.sm,
     paddingHorizontal: spacing.lg,
+    ...shadow,
   },
   statValue: {color: palette.text, fontSize: 20, fontWeight: '900'},
   statLabel: {color: palette.textMuted, fontSize: 12, fontWeight: '600'},
@@ -127,7 +130,7 @@ const styles = StyleSheet.create({
   progressTrack: {
     height: 10,
     borderRadius: 5,
-    backgroundColor: palette.panel,
+    backgroundColor: palette.panelLight,
     overflow: 'hidden',
   },
   progressFill: {

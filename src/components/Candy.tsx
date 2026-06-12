@@ -22,7 +22,13 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import {ANIM} from '../constants';
-import {CANDY_INSET, CANDY_SIZE, TILE_SIZE} from '../constants/layout';
+import {
+  CANDY_OFFSET_X,
+  CANDY_OFFSET_Y,
+  CANDY_SIZE,
+  TILE_HEIGHT,
+  TILE_WIDTH,
+} from '../constants/layout';
 import {SPECIAL_GLYPH, candyTheme, palette, radius} from '../constants/theme';
 import {Cell} from '../types';
 
@@ -57,12 +63,12 @@ function CandyComponent({
   dragX,
   dragY,
 }: CandyProps) {
-  const targetX = col * TILE_SIZE + CANDY_INSET;
-  const targetY = row * TILE_SIZE + CANDY_INSET;
+  const targetX = col * TILE_WIDTH + CANDY_OFFSET_X;
+  const targetY = row * TILE_HEIGHT + CANDY_OFFSET_Y;
 
   // Start above the board for a fall-in effect.
   const tx = useSharedValue(targetX);
-  const ty = useSharedValue(-TILE_SIZE);
+  const ty = useSharedValue(-TILE_HEIGHT);
   const scale = useSharedValue(0.7);
   const opacity = useSharedValue(0);
   const firstRender = useRef(true);

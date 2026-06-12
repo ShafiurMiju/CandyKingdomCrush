@@ -1,10 +1,13 @@
 import React, {useCallback} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, View} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
+import AppBackground from '../components/AppBackground';
 import Button from '../components/Button';
-import {palette, spacing} from '../constants/theme';
+import {palette, radius, spacing} from '../constants/theme';
+
+const WORDMARK = require('../assets/images/logo_wordmark.png');
 import {LEVELS} from '../levels';
 import {useSound} from '../hooks/useSound';
 import {MAX_STARS, useProgressStore} from '../store/progressStore';
@@ -29,71 +32,95 @@ export default function HomeScreen({navigation}: ScreenProps<'Home'>) {
     if (firstUnbeaten) {
       return firstUnbeaten.id;
     }
-    const lastUnlocked = [...LEVELS].reverse().find(l => levels[l.id]?.unlocked);
+    const lastUnlocked = [...LEVELS]
+      .reverse()
+      .find(l => levels[l.id]?.unlocked);
     return lastUnlocked?.id ?? 1;
   })();
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.candies}>🍓 🍋 🍇</Text>
-        <Text style={styles.title}>Candy Kingdom</Text>
-        <Text style={styles.titleBig}>CRUSH</Text>
-        <Text style={styles.stars}>
-          ⭐ {totalStars} / {MAX_STARS}
-        </Text>
-      </View>
+    <AppBackground>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <Image
+            source={WORDMARK}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+          <Text style={styles.stars}>
+            ⭐ {totalStars} / {MAX_STARS}
+          </Text>
+        </View>
 
-      <View style={styles.menu}>
-        <Button
-          title="Start Game"
-          icon="🍬"
-          onPress={() => navigation.navigate('Game', {levelId: continueLevelId})}
-          style={styles.btn}
-        />
-        <Button
-          title="Level Select"
-          icon="🗺️"
-          variant="secondary"
-          onPress={() => navigation.navigate('LevelSelect')}
-          style={styles.btn}
-        />
-        <Button
-          title="Settings"
-          icon="⚙️"
-          variant="ghost"
-          onPress={() => navigation.navigate('Settings')}
-          style={styles.btn}
-        />
-      </View>
+        <View style={styles.menu}>
+          <Button
+            title="Start Game"
+            icon="🍬"
+            onPress={() =>
+              navigation.navigate('Game', {levelId: continueLevelId})
+            }
+            style={styles.btn}
+          />
+          <Button
+            title="Level Select"
+            icon="🗺️"
+            variant="secondary"
+            onPress={() => navigation.navigate('LevelSelect')}
+            style={styles.btn}
+          />
+          <Button
+            title="Settings"
+            icon="⚙️"
+            variant="ghost"
+            onPress={() => navigation.navigate('Settings')}
+            style={styles.btn}
+          />
+        </View>
 
-      <Text style={styles.footer}>Match • Crush • Conquer the Kingdom</Text>
-    </SafeAreaView>
+        <Text style={styles.footer}>Match • Crush • Conquer the Kingdom</Text>
+      </SafeAreaView>
+    </AppBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: palette.bgTop,
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: spacing.xl,
   },
   header: {alignItems: 'center', marginTop: spacing.xl},
-  candies: {fontSize: 34, letterSpacing: 6, marginBottom: spacing.md},
-  title: {color: palette.text, fontSize: 30, fontWeight: '800'},
-  titleBig: {
-    color: palette.accent,
-    fontSize: 56,
-    fontWeight: '900',
-    letterSpacing: 2,
-    textShadowColor: 'rgba(0,0,0,0.35)',
-    textShadowOffset: {width: 0, height: 3},
-    textShadowRadius: 4,
+  logo: {
+    width: 340,
+    aspectRatio: 1024 / 540,
+    shadowColor: '#000',
+    shadowOpacity: 0.75,
+    shadowRadius: 22,
+    shadowOffset: {width: 0, height: 8},
+    elevation: 14,
   },
-  stars: {color: palette.text, fontSize: 18, fontWeight: '700', marginTop: spacing.md},
+  stars: {
+    color: palette.text,
+    fontSize: 18,
+    fontWeight: '700',
+    marginTop: spacing.md,
+    backgroundColor: palette.panelLight,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.xs,
+    borderRadius: radius.pill,
+    overflow: 'hidden',
+  },
   menu: {width: '100%', alignItems: 'center'},
   btn: {marginVertical: spacing.sm},
-  footer: {color: palette.textMuted, fontSize: 13, fontWeight: '600'},
+  footer: {
+    color: palette.text,
+    fontSize: 13,
+    fontWeight: '800',
+    backgroundColor: palette.panelLight,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.xs,
+    borderRadius: radius.pill,
+    overflow: 'hidden',
+  },
 });

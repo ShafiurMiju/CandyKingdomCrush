@@ -3,6 +3,9 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="android:statusBarColor">#3A1078</item>
+        <item name="android:statusBarColor">#FFF1F6</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <!-- Native cold-start splash (shown before the JS bundle loads). -->
+        <item name="android:windowBackground">@drawable/splash_screen</item>
     </style>
 </resources>

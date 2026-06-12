@@ -37,7 +37,13 @@ export default function PauseOverlay({
         onPress={onRestart}
         style={styles.btn}
       />
-      <Button title="Quit to Levels" variant="ghost" onPress={onHome} style={styles.btn} />
+      <Button
+        title="Quit to Levels"
+        variant="ghost"
+        onPress={onHome}
+        style={styles.btn}
+        textStyle={styles.quitText}
+      />
     </OverlayContainer>
   );
 }
@@ -65,7 +71,7 @@ function ToggleRow({
 }
 
 const styles = StyleSheet.create({
-  title: {color: palette.text, fontSize: 28, fontWeight: '900', marginBottom: spacing.lg},
+  title: {color: palette.panel, fontSize: 28, fontWeight: '900', marginBottom: spacing.lg},
   toggles: {width: '100%', marginBottom: spacing.md},
   row: {
     flexDirection: 'row',
@@ -73,6 +79,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: spacing.sm,
   },
-  rowLabel: {color: palette.text, fontSize: 16, fontWeight: '700'},
+  rowLabel: {color: palette.panel, fontSize: 16, fontWeight: '700'},
   btn: {marginTop: spacing.sm, width: '100%'},
+  quitText: {color: palette.panel},
 });

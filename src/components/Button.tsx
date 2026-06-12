@@ -6,6 +6,7 @@ import {
   StyleProp,
   StyleSheet,
   Text,
+  TextStyle,
   View,
   ViewStyle,
 } from 'react-native';
@@ -20,6 +21,7 @@ interface ButtonProps {
   disabled?: boolean;
   icon?: string;
   style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
 }
 
 export default function Button({
@@ -29,6 +31,7 @@ export default function Button({
   disabled,
   icon,
   style,
+  textStyle,
 }: ButtonProps) {
   return (
     <Pressable
@@ -48,7 +51,10 @@ export default function Button({
         <Text
           style={[
             styles.text,
+            variant === 'primary' && styles.primaryText,
+            variant === 'secondary' && styles.secondaryText,
             variant === 'ghost' && styles.ghostText,
+            textStyle,
           ]}>
           {title}
         </Text>
@@ -80,9 +86,10 @@ const styles = StyleSheet.create({
   disabled: {opacity: 0.45},
   icon: {fontSize: 18, marginRight: spacing.sm},
   text: {
-    color: '#2A0E5F',
     fontSize: 18,
     fontWeight: '800',
   },
+  primaryText: {color: '#FFFFFF'},
+  secondaryText: {color: palette.text},
   ghostText: {color: palette.text},
 });

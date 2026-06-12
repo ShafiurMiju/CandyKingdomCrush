@@ -1,29 +1,29 @@
-# Sound assets (placeholders)
+# Sound assets
 
-The game ships **without** bundled audio so it installs cleanly and stays fully
-offline. `AudioService` (`src/services/audio.ts`) exposes a stable API whose
-calls are currently silent no-ops.
+Generated chiptune-style WAVs played via `react-native-sound`
+(`AudioService` in `src/services/audio.ts`).
 
-To add real audio:
+| Key      | File           | When it plays             |
+| -------- | -------------- | ------------------------- |
+| swap     | `swap.wav`     | candies are swapped       |
+| match    | `match.wav`    | a normal match clears     |
+| combo    | `combo.wav`    | cascade combo (x3+)       |
+| special  | `special.wav`  | a special candy detonates |
+| invalid  | `invalid.wav`  | an illegal swap is tried  |
+| menu BGM | `bgm_menu.wav` | home / level select music (loops) |
+| game BGM | `bgm_game.wav` | in-level music (loops)    |
+| win      | `win.wav`      | level complete (stinger)  |
+| lose     | `lose.wav`     | out of moves (stinger)    |
 
-1. Install a player: `npm i react-native-sound`
-   (Android: no extra steps; iOS: `cd ios && pod install`).
-2. Drop the following files here:
+These files are the single source of truth, referenced directly by the Xcode
+project (Sounds group) and mirrored into `android/app/src/main/res/raw/`.
 
-   | Key       | File           | When it plays              |
-   | --------- | -------------- | -------------------------- |
-   | match     | `match.mp3`    | a normal match clears      |
-   | combo     | `combo.mp3`    | cascade combo (x3+)        |
-   | special   | `special.mp3`  | a special candy detonates  |
-   | swap      | `swap.mp3`     | candies are swapped        |
-   | invalid   | `invalid.mp3`  | an illegal swap is tried   |
-   | menu BGM  | `bgm_menu.mp3` | home / level select music  |
-   | game BGM  | `bgm_game.mp3` | in-level music             |
-   | win       | `win.mp3`      | level complete             |
-   | lose      | `lose.mp3`     | out of moves               |
+To tweak or regenerate everything (synthesised offline, no licensing):
 
-3. Implement `load()` / `playEffect()` / `playMusic()` inside
-   `src/services/audio.ts`. The rest of the app already calls these methods, so
-   no other changes are needed.
+```sh
+python3 scripts/generate_sounds.py
+```
 
-File names are also declared in `SOUND_FILES` / `MUSIC_FILES` in `audio.ts`.
+To replace a sound with a real recording, overwrite the `.wav` here AND in
+`android/app/src/main/res/raw/` (same filename), then rebuild the app.
+File names are declared in `SOUND_FILES` / `MUSIC_FILES` in `audio.ts`.

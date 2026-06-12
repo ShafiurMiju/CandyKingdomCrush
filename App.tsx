@@ -11,6 +11,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 import RootNavigator from './src/navigation/RootNavigator';
+import {palette} from './src/constants/theme';
 import {useProgressStore} from './src/store/progressStore';
 import {useSettingsStore} from './src/store/settingsStore';
 import {AudioService} from './src/services/audio';
@@ -32,7 +33,7 @@ function App(): React.JSX.Element {
   return (
     <GestureHandlerRootView style={styles.root}>
       <SafeAreaProvider>
-        <StatusBar barStyle="light-content" backgroundColor="#3A1078" />
+        <StatusBar barStyle="dark-content" backgroundColor={palette.bgTop} />
         <RootNavigator />
       </SafeAreaProvider>
     </GestureHandlerRootView>

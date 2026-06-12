@@ -1,7 +1,7 @@
 /** Dimmed full-screen backdrop with a centered card that pops in. */
 
 import React, {useEffect} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {Dimensions, StyleSheet, View} from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -9,6 +9,10 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import {palette, radius, shadow, spacing} from '../constants/theme';
+
+// A concrete width avoids the RN quirk where width:'100%' + maxWidth paints the
+// card at the capped width but lays its children out across the full width.
+const CARD_WIDTH = Math.min(360, Dimensions.get('window').width - spacing.lg * 2);
 
 export default function OverlayContainer({children}: {children: React.ReactNode}) {
   const scale = useSharedValue(0.7);
@@ -42,9 +46,8 @@ const styles = StyleSheet.create({
   },
   center: {flex: 1, alignItems: 'center', justifyContent: 'center', padding: spacing.lg},
   card: {
-    width: '100%',
-    maxWidth: 360,
-    backgroundColor: palette.panel,
+    width: CARD_WIDTH,
+    alignSelf: 'center',
     borderRadius: radius.lg,
     padding: spacing.xl,
     alignItems: 'center',

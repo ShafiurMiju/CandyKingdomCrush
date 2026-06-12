@@ -60,6 +60,6 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
     alignItems: 'center',
   },
-  text: {fontSize: 22, fontWeight: '900', color: '#2A0E5F'},
-  mult: {fontSize: 12, fontWeight: '700', color: '#5A2EA6'},
+  text: {fontSize: 22, fontWeight: '900', color: '#FFFFFF'},
+  mult: {fontSize: 12, fontWeight: '700', color: 'rgba(255,255,255,0.9)'},
 });

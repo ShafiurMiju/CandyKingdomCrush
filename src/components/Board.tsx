@@ -25,11 +25,13 @@ import Animated, {
 
 import {BOARD_COLS, BOARD_ROWS, SWIPE_THRESHOLD} from '../constants';
 import {
+  BOARD_HEIGHT,
   BOARD_PADDING,
-  BOARD_SIZE,
+  BOARD_WIDTH,
   GRID_HEIGHT,
   GRID_WIDTH,
-  TILE_SIZE,
+  TILE_HEIGHT,
+  TILE_WIDTH,
 } from '../constants/layout';
 import {palette, radius} from '../constants/theme';
 import {isSwapAllowed} from '../game-engine/SwapValidator';
@@ -45,7 +47,7 @@ interface BoardProps {
 }
 
 /** How far (px) the grabbed candy follows the finger before clamping. */
-const MAX_FOLLOW = TILE_SIZE * 0.3;
+const MAX_FOLLOW = TILE_WIDTH * 0.3;
 
 function BoardComponent({onSwipe, invalidNonce}: BoardProps) {
   const board = useGameStore(s => s.board);
@@ -156,11 +158,11 @@ function BoardComponent({onSwipe, invalidNonce}: BoardProps) {
       dragY.value = 0;
       dirCode.value = -1;
       const col = Math.min(
-        Math.max(Math.floor(e.x / TILE_SIZE), 0),
+        Math.max(Math.floor(e.x / TILE_WIDTH), 0),
         BOARD_COLS - 1,
       );
       const row = Math.min(
-        Math.max(Math.floor(e.y / TILE_SIZE), 0),
+        Math.max(Math.floor(e.y / TILE_HEIGHT), 0),
         BOARD_ROWS - 1,
       );
       runOnJS(selectAt)(row, col);
@@ -190,11 +192,11 @@ function BoardComponent({onSwipe, invalidNonce}: BoardProps) {
       if (dir !== dirCode.value) {
         dirCode.value = dir;
         const col = Math.min(
-          Math.max(Math.floor(startX.value / TILE_SIZE), 0),
+          Math.max(Math.floor(startX.value / TILE_WIDTH), 0),
           BOARD_COLS - 1,
         );
         const row = Math.min(
-          Math.max(Math.floor(startY.value / TILE_SIZE), 0),
+          Math.max(Math.floor(startY.value / TILE_HEIGHT), 0),
           BOARD_ROWS - 1,
         );
         runOnJS(updateTarget)(row, col, dir);
@@ -208,11 +210,11 @@ function BoardComponent({onSwipe, invalidNonce}: BoardProps) {
         return;
       }
       const col = Math.min(
-        Math.max(Math.floor(startX.value / TILE_SIZE), 0),
+        Math.max(Math.floor(startX.value / TILE_WIDTH), 0),
         BOARD_COLS - 1,
       );
       const row = Math.min(
-        Math.max(Math.floor(startY.value / TILE_SIZE), 0),
+        Math.max(Math.floor(startY.value / TILE_HEIGHT), 0),
         BOARD_ROWS - 1,
       );
       let dir: SwipeDirection;
@@ -273,8 +275,8 @@ function GridBackground() {
           style={[
             styles.bgCell,
             {
-              left: c * TILE_SIZE,
-              top: r * TILE_SIZE,
+              left: c * TILE_WIDTH,
+              top: r * TILE_HEIGHT,
               backgroundColor: even ? palette.cellEven : palette.cellOdd,
             },
           ]}
@@ -287,8 +289,8 @@ function GridBackground() {
 
 const styles = StyleSheet.create({
   frame: {
-    width: BOARD_SIZE,
-    height: BOARD_SIZE,
+    width: BOARD_WIDTH,
+    height: BOARD_HEIGHT,
     padding: BOARD_PADDING,
     borderRadius: radius.lg,
     backgroundColor: palette.boardBg,
@@ -306,8 +308,8 @@ const styles = StyleSheet.create({
   },
   bgCell: {
     position: 'absolute',
-    width: TILE_SIZE,
-    height: TILE_SIZE,
+    width: TILE_WIDTH,
+    height: TILE_HEIGHT,
   },
   candyLayer: {
     width: GRID_WIDTH,
