@@ -1,8 +1,8 @@
 /**
  * GameHUD
  * -------
- * Top-of-screen heads-up display: level name, score vs target, objective
- * progress, moves remaining and a pause button.
+ * Top-of-screen heads-up display: a level pill + pause button, then a single
+ * card holding the score / moves / target stats and the objective progress bar.
  */
 
 import React from 'react';
@@ -33,28 +33,41 @@ export default function GameHUD({onPause}: GameHUDProps) {
   return (
     <View style={styles.container}>
       <View style={styles.topRow}>
-        <View style={styles.levelBadge}>
-          <Text style={styles.levelText}>Level {level.id}</Text>
-          <Text style={styles.levelName}>{level.name}</Text>
+        <View style={styles.levelPill}>
+          <View style={styles.levelNum}>
+            <Text style={styles.levelNumText}>{level.id}</Text>
+          </View>
+          <View style={styles.levelTextWrap}>
+            <Text style={styles.levelKicker}>LEVEL</Text>
+            <Text style={styles.levelName} numberOfLines={1}>
+              {level.name}
+            </Text>
+          </View>
         </View>
         <Pressable style={styles.pause} onPress={onPause} hitSlop={10}>
           <Text style={styles.pauseGlyph}>⏸</Text>
         </Pressable>
       </View>
 
-      <View style={styles.statsRow}>
-        <Stat label="Score" value={formatScore(score)} />
-        <View style={styles.movesBox}>
-          <Text style={styles.movesValue}>{movesLeft}</Text>
-          <Text style={styles.statLabel}>Moves</Text>
+      <View style={styles.card}>
+        <View style={styles.statsRow}>
+          <Stat label="Score" value={formatScore(score)} />
+          <View style={styles.vDivider} />
+          <Stat label="Moves" value={String(movesLeft)} highlight />
+          <View style={styles.vDivider} />
+          <Stat label="Target" value={formatScore(level.targetScore)} />
         </View>
-        <Stat label="Target" value={formatScore(level.targetScore)} alignEnd />
-      </View>
 
-      <View style={styles.objective}>
-        <Text style={styles.objectiveLabel}>
-          {progress.label} · {progress.current}/{progress.target}
-        </Text>
+        <View style={styles.hDivider} />
+
+        <View style={styles.objectiveRow}>
+          <Text style={styles.objectiveLabel} numberOfLines={1}>
+            {progress.label}
+          </Text>
+          <Text style={styles.objectiveCount}>
+            {progress.current}/{progress.target}
+          </Text>
+        </View>
         <View style={styles.progressTrack}>
           <View style={[styles.progressFill, {width: `${ratio * 100}%`}]} />
         </View>
@@ -66,15 +79,17 @@ export default function GameHUD({onPause}: GameHUDProps) {
 function Stat({
   label,
   value,
-  alignEnd,
+  highlight,
 }: {
   label: string;
   value: string;
-  alignEnd?: boolean;
+  highlight?: boolean;
 }) {
   return (
-    <View style={{alignItems: alignEnd ? 'flex-end' : 'flex-start', flex: 1}}>
-      <Text style={styles.statValue}>{value}</Text>
+    <View style={styles.stat}>
+      <Text style={[styles.statValue, highlight && styles.statValueHi]}>
+        {value}
+      </Text>
       <Text style={styles.statLabel}>{label}</Text>
     </View>
   );
@@ -90,43 +105,98 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginBottom: spacing.md,
   },
-  levelBadge: {},
-  levelText: {color: palette.accent, fontSize: 14, fontWeight: '800'},
-  levelName: {color: palette.text, fontSize: 20, fontWeight: '900'},
+  levelPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: palette.panel,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    borderColor: palette.panelLight,
+    paddingLeft: 6,
+    paddingRight: spacing.lg,
+    paddingVertical: 6,
+    ...shadow,
+  },
+  levelNum: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: palette.accent,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: spacing.sm,
+  },
+  levelNumText: {color: '#FFFFFF', fontSize: 18, fontWeight: '900'},
+  levelTextWrap: {justifyContent: 'center'},
+  levelKicker: {
+    color: palette.textMuted,
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 1.5,
+  },
+  levelName: {
+    color: palette.text,
+    fontSize: 17,
+    fontWeight: '900',
+    maxWidth: 190,
+  },
   pause: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    backgroundColor: palette.panelLight,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: palette.panel,
+    borderWidth: 1,
+    borderColor: palette.panelLight,
     alignItems: 'center',
     justifyContent: 'center',
     ...shadow,
   },
-  pauseGlyph: {color: palette.text, fontSize: 18},
-  statsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: spacing.md,
+  pauseGlyph: {color: palette.accent, fontSize: 18, fontWeight: '900'},
+
+  card: {
     backgroundColor: palette.panel,
-    borderRadius: radius.md,
+    borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: palette.panelLight,
-    paddingVertical: spacing.sm,
     paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
     ...shadow,
   },
-  statValue: {color: palette.text, fontSize: 20, fontWeight: '900'},
-  statLabel: {color: palette.textMuted, fontSize: 12, fontWeight: '600'},
-  movesBox: {alignItems: 'center', flex: 1},
-  movesValue: {color: palette.accent, fontSize: 26, fontWeight: '900'},
-  objective: {marginTop: spacing.sm},
-  objectiveLabel: {
+  statsRow: {flexDirection: 'row', alignItems: 'center'},
+  stat: {flex: 1, alignItems: 'center'},
+  statValue: {color: palette.text, fontSize: 22, fontWeight: '900'},
+  statValueHi: {color: palette.accent, fontSize: 24},
+  statLabel: {
     color: palette.textMuted,
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+    marginTop: 2,
+    textTransform: 'uppercase',
+  },
+  vDivider: {width: 1, height: 34, backgroundColor: palette.panelLight},
+
+  hDivider: {
+    height: 1,
+    backgroundColor: palette.panelLight,
+    marginVertical: spacing.md,
+  },
+  objectiveRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: spacing.sm,
+  },
+  objectiveLabel: {
+    color: palette.text,
     fontSize: 13,
     fontWeight: '700',
-    marginBottom: 4,
+    flex: 1,
+    marginRight: spacing.sm,
   },
+  objectiveCount: {color: palette.accentDark, fontSize: 13, fontWeight: '800'},
   progressTrack: {
     height: 10,
     borderRadius: 5,

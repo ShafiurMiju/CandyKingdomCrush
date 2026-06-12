@@ -43,17 +43,24 @@ export default function WinOverlay({onNext, onReplay, onHome}: WinOverlayProps) 
         onPress={onReplay}
         style={styles.btn}
       />
-      <Button title="Levels" variant="ghost" onPress={onHome} style={styles.btn} />
+      <Button
+        title="Levels"
+        variant="ghost"
+        onPress={onHome}
+        style={styles.btn}
+        textStyle={styles.levelsText}
+      />
     </OverlayContainer>
   );
 }
 
 const styles = StyleSheet.create({
   emoji: {fontSize: 48},
-  title: {color: palette.text, fontSize: 26, fontWeight: '900', marginTop: spacing.xs},
-  subtitle: {color: palette.textMuted, fontSize: 15, marginBottom: spacing.md},
-  scoreLabel: {color: palette.textMuted, fontSize: 13, marginTop: spacing.lg},
+  title: {color: palette.panel, fontSize: 26, fontWeight: '900', marginTop: spacing.xs},
+  subtitle: {color: 'rgba(255,255,255,0.8)', fontSize: 15, marginBottom: spacing.md},
+  scoreLabel: {color: 'rgba(255,255,255,0.8)', fontSize: 13, marginTop: spacing.lg},
   score: {color: palette.accent, fontSize: 34, fontWeight: '900', marginBottom: spacing.lg},
   allDone: {color: palette.success, fontSize: 16, fontWeight: '800', marginVertical: spacing.md, textAlign: 'center'},
   btn: {marginTop: spacing.sm, width: '100%'},
+  levelsText: {color: palette.panel},
 });
