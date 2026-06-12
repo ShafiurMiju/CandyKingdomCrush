@@ -14,6 +14,7 @@ import RootNavigator from './src/navigation/RootNavigator';
 import {palette} from './src/constants/theme';
 import {useProgressStore} from './src/store/progressStore';
 import {useSettingsStore} from './src/store/settingsStore';
+import {AdsService} from './src/services/ads';
 import {AudioService} from './src/services/audio';
 
 function App(): React.JSX.Element {
@@ -25,6 +26,7 @@ function App(): React.JSX.Element {
     hydrateProgress();
     hydrateSettings();
     AudioService.init();
+    AdsService.init();
     return () => {
       AudioService.dispose();
     };

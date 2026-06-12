@@ -29,6 +29,12 @@ interface GameState {
   setBoard: (board: Board) => void;
   addScore: (points: number) => void;
   consumeMove: () => void;
+  /** Reward: grant extra swaps (rewarded-ad power-up). */
+  addMoves: (n: number) => void;
+  /** Reward: revive from a loss with extra swaps, resuming the same board. */
+  continueWithMoves: (n: number) => void;
+  /** Reward: turn a random plain candy into a colour bomb (rewarded-ad power-up). */
+  spawnBomb: () => void;
   setCombo: (combo: number) => void;
   setBusy: (busy: boolean) => void;
   setPopping: (ids: number[]) => void;
@@ -69,6 +75,42 @@ export const useGameStore = create<GameState>(set => ({
   setBoard: board => set({board}),
   addScore: points => set(state => ({score: state.score + points})),
   consumeMove: () => set(state => ({movesLeft: Math.max(0, state.movesLeft - 1)})),
+
+  addMoves: n => set(state => ({movesLeft: state.movesLeft + n})),
+
+  continueWithMoves: n =>
+    set(state => ({
+      movesLeft: state.movesLeft + n,
+      status: 'playing',
+      combo: 0,
+      busy: false,
+    })),
+
+  spawnBomb: () =>
+    set(state => {
+      // Eligible: a real, movable, plain candy (not chocolate/locked/special).
+      const candidates: Array<[number, number]> = [];
+      state.board.forEach((row, r) =>
+        row.forEach((cell, c) => {
+          if (cell && !cell.chocolate && !cell.locked && cell.special === 'none') {
+            candidates.push([r, c]);
+          }
+        }),
+      );
+      if (candidates.length === 0) {
+        return {};
+      }
+      const [pr, pc] = candidates[Math.floor(Math.random() * candidates.length)];
+      const board = state.board.map((row, r) =>
+        r === pr
+          ? row.map((cell, c) =>
+              c === pc && cell ? {...cell, special: 'bomb' as const} : cell,
+            )
+          : row,
+      );
+      return {board};
+    }),
+
   setCombo: combo => set({combo}),
   setBusy: busy => set({busy}),
   setPopping: ids => set({poppingIds: ids}),

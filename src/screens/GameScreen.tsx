@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useRef} from 'react';
 import {BackHandler, StyleSheet, View} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -9,11 +9,13 @@ import ComboToast from '../components/ComboToast';
 import GameHUD from '../components/GameHUD';
 import LoseOverlay from '../components/LoseOverlay';
 import PauseOverlay from '../components/PauseOverlay';
+import PowerUps from '../components/PowerUps';
 import WinOverlay from '../components/WinOverlay';
 import {useGameBoard} from '../hooks/useGameBoard';
 import {useSound} from '../hooks/useSound';
 import {getLevel, nextLevelId} from '../levels';
 import {useGameStore} from '../store/gameStore';
+import {AdsService} from '../services/ads';
 import {ScreenProps} from '../navigation/types';
 
 export default function GameScreen({navigation, route}: ScreenProps<'Game'>) {
@@ -27,7 +29,9 @@ export default function GameScreen({navigation, route}: ScreenProps<'Game'>) {
 
   const {onSwipe, invalidNonce} = useGameBoard();
 
-  // (Re)start whenever the target level changes.
+  // (Re)start whenever the target level changes. Showing an interstitial here
+  // covers both "level start" (from the menu) and "level up" (Next replaces the
+  // screen with a new levelId, remounting this effect).
   useEffect(() => {
     const level = getLevel(levelId);
     if (!level) {
@@ -35,7 +39,21 @@ export default function GameScreen({navigation, route}: ScreenProps<'Game'>) {
       return;
     }
     startLevel(level);
+    AdsService.showInterstitial();
   }, [levelId, startLevel, navigation]);
+
+  // Interstitial when the level ends — once per win/loss transition.
+  const adShownFor = useRef<'won' | 'lost' | null>(null);
+  useEffect(() => {
+    if (status === 'won' || status === 'lost') {
+      if (adShownFor.current !== status) {
+        adShownFor.current = status;
+        AdsService.showInterstitial();
+      }
+    } else if (status === 'playing') {
+      adShownFor.current = null;
+    }
+  }, [status]);
 
   useFocusEffect(
     useCallback(() => {
@@ -85,6 +103,8 @@ export default function GameScreen({navigation, route}: ScreenProps<'Game'>) {
         <View style={styles.boardWrap}>
           <Board onSwipe={onSwipe} invalidNonce={invalidNonce} />
         </View>
+
+        <PowerUps />
 
         <ComboToast />
 

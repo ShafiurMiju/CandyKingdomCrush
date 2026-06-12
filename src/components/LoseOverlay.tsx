@@ -4,10 +4,13 @@ import React from 'react';
 import {StyleSheet, Text} from 'react-native';
 import {objectiveProgress} from '../game-engine/LevelEngine';
 import {palette, spacing} from '../constants/theme';
+import {AdsService} from '../services/ads';
 import {useGameStore} from '../store/gameStore';
 import {formatScore} from '../utils/helpers';
 import Button from './Button';
 import OverlayContainer from './OverlayContainer';
+
+const CONTINUE_MOVES = 5;
 
 interface LoseOverlayProps {
   onRetry: () => void;
@@ -18,8 +21,14 @@ export default function LoseOverlay({onRetry, onHome}: LoseOverlayProps) {
   const score = useGameStore(s => s.score);
   const level = useGameStore(s => s.level);
   const board = useGameStore(s => s.board);
+  const continueWithMoves = useGameStore(s => s.continueWithMoves);
 
   const progress = level ? objectiveProgress(level, board, score) : null;
+  // Only offer "continue" when a rewarded ad is actually ready to show.
+  const canContinue = AdsService.isRewardedReady();
+
+  const onContinue = () =>
+    AdsService.showRewarded(() => continueWithMoves(CONTINUE_MOVES));
 
   return (
     <OverlayContainer>
@@ -34,7 +43,21 @@ export default function LoseOverlay({onRetry, onHome}: LoseOverlayProps) {
       <Text style={styles.scoreLabel}>Your score</Text>
       <Text style={styles.score}>{formatScore(score)}</Text>
 
-      <Button title="Retry" icon="🔁" onPress={onRetry} style={styles.btn} />
+      {canContinue ? (
+        <Button
+          title={`Continue +${CONTINUE_MOVES} Moves`}
+          icon="📺"
+          onPress={onContinue}
+          style={styles.btn}
+        />
+      ) : null}
+      <Button
+        title="Retry"
+        icon="🔁"
+        variant={canContinue ? 'secondary' : 'primary'}
+        onPress={onRetry}
+        style={styles.btn}
+      />
       <Button title="Levels" variant="ghost" onPress={onHome} style={styles.btn} />
     </OverlayContainer>
   );

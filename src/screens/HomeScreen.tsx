@@ -3,6 +3,7 @@ import {Image, StyleSheet, Text, View} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
+import AdBanner from '../components/AdBanner';
 import AppBackground from '../components/AppBackground';
 import Button from '../components/Button';
 import {palette, radius, spacing} from '../constants/theme';
@@ -77,7 +78,10 @@ export default function HomeScreen({navigation}: ScreenProps<'Home'>) {
           />
         </View>
 
-        <Text style={styles.footer}>Match • Crush • Conquer the Kingdom</Text>
+        <View style={styles.bottom}>
+          <Text style={styles.footer}>Match • Crush • Conquer the Kingdom</Text>
+          <AdBanner />
+        </View>
       </SafeAreaView>
     </AppBackground>
   );
@@ -113,6 +117,7 @@ const styles = StyleSheet.create({
   },
   menu: {width: '100%', alignItems: 'center'},
   btn: {marginVertical: spacing.sm},
+  bottom: {alignItems: 'center', gap: spacing.md},
   footer: {
     color: palette.text,
     fontSize: 13,
