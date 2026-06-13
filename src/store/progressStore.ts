@@ -4,7 +4,8 @@
  */
 
 import {create} from 'zustand';
-import {LEVELS, TOTAL_LEVELS, nextLevelId} from '../levels';
+import {STARS_PER_LEVEL} from '../constants';
+import {LEVELS, TOTAL_LEVELS, getLevel, nextLevelId} from '../levels';
 import {StorageKeys, clearAll, loadJSON, saveJSON} from '../services/storage';
 import {LevelProgress} from '../types';
 
@@ -14,10 +15,17 @@ interface ProgressState {
   hydrated: boolean;
   levels: ProgressMap;
   hydrate: () => Promise<void>;
-  recordResult: (levelId: number, stars: number, score: number) => void;
+  recordResult: (
+    levelId: number,
+    stars: number,
+    score: number,
+    bonusStar: boolean,
+  ) => void;
   isUnlocked: (levelId: number) => boolean;
   getProgress: (levelId: number) => LevelProgress;
   totalStars: () => number;
+  /** Total bonus stars collected — the currency that opens star-gated levels. */
+  totalBonusStars: () => number;
   reset: () => Promise<void>;
 }
 
@@ -29,6 +37,7 @@ function defaultProgress(): ProgressMap {
       unlocked: level.id === 1,
       stars: 0,
       bestScore: 0,
+      bonusStar: false,
     };
   }
   return map;
@@ -44,9 +53,12 @@ function mergeProgress(saved: ProgressMap | null): ProgressMap {
     const s = saved[level.id];
     if (s) {
       base[level.id] = {
-        unlocked: s.unlocked || level.id === 1,
-        stars: Math.min(3, Math.max(0, s.stars ?? 0)),
+        // Treat a missing `unlocked` (older saves) as already unlocked so we
+        // never re-lock earned progress; only an explicit false re-locks.
+        unlocked: s.unlocked !== false || level.id === 1,
+        stars: Math.min(STARS_PER_LEVEL, Math.max(0, s.stars ?? 0)),
         bestScore: Math.max(0, s.bestScore ?? 0),
+        bonusStar: !!s.bonusStar,
       };
     }
   }
@@ -62,20 +74,26 @@ export const useProgressStore = create<ProgressState>((set, get) => ({
     set({levels: mergeProgress(saved), hydrated: true});
   },
 
-  recordResult: (levelId, stars, score) => {
+  recordResult: (levelId, stars, score, bonusStar) => {
     const levels = {...get().levels};
-    const prev = levels[levelId] ?? {unlocked: true, stars: 0, bestScore: 0};
+    const prev = levels[levelId] ?? {
+      unlocked: true,
+      stars: 0,
+      bestScore: 0,
+      bonusStar: false,
+    };
     levels[levelId] = {
       unlocked: true,
       stars: Math.max(prev.stars, stars),
       bestScore: Math.max(prev.bestScore, score),
+      bonusStar: prev.bonusStar || bonusStar,
     };
     // Unlock the next level on any win (stars >= 1).
     if (stars >= 1) {
       const next = nextLevelId(levelId);
       if (next != null) {
         levels[next] = {
-          ...(levels[next] ?? {stars: 0, bestScore: 0}),
+          ...(levels[next] ?? {stars: 0, bestScore: 0, bonusStar: false}),
           unlocked: true,
         };
       }
@@ -84,13 +102,30 @@ export const useProgressStore = create<ProgressState>((set, get) => ({
     void saveJSON(StorageKeys.progress, levels);
   },
 
-  isUnlocked: levelId => get().levels[levelId]?.unlocked ?? false,
+  // A level is playable once it has been sequentially reached AND the player
+  // has collected enough BONUS stars to clear its gate (requiredStars).
+  isUnlocked: levelId => {
+    const stored = get().levels[levelId]?.unlocked ?? levelId === 1;
+    if (!stored) {
+      return false;
+    }
+    const required = getLevel(levelId)?.requiredStars ?? 0;
+    return get().totalBonusStars() >= required;
+  },
 
   getProgress: levelId =>
-    get().levels[levelId] ?? {unlocked: levelId === 1, stars: 0, bestScore: 0},
+    get().levels[levelId] ?? {
+      unlocked: levelId === 1,
+      stars: 0,
+      bestScore: 0,
+      bonusStar: false,
+    },
 
   totalStars: () =>
     Object.values(get().levels).reduce((sum, p) => sum + p.stars, 0),
+
+  totalBonusStars: () =>
+    Object.values(get().levels).reduce((sum, p) => sum + (p.bonusStar ? 1 : 0), 0),
 
   reset: async () => {
     await clearAll();
@@ -98,4 +133,7 @@ export const useProgressStore = create<ProgressState>((set, get) => ({
   },
 }));
 
-export const MAX_STARS = TOTAL_LEVELS * 3;
+/** Maximum collectible regular stars (3 per level). */
+export const MAX_STARS = TOTAL_LEVELS * STARS_PER_LEVEL;
+/** Maximum collectible bonus stars (1 per level) — the unlock currency. */
+export const MAX_BONUS_STARS = TOTAL_LEVELS;

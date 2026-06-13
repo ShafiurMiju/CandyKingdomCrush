@@ -17,6 +17,10 @@ export const LEVEL_NODE_SIZE = 82;
 interface LevelNodeProps {
   level: LevelConfig;
   progress: LevelProgress;
+  /** Whether the level is locked (sequential reach + star gate). */
+  locked: boolean;
+  /** Total stars required, shown when the node is locked by its star gate. */
+  starsNeeded?: number;
   /** True for the level the player should play next (highlighted). */
   current?: boolean;
   onPress: () => void;
@@ -25,10 +29,11 @@ interface LevelNodeProps {
 export default function LevelNode({
   level,
   progress,
+  locked,
+  starsNeeded,
   current,
   onPress,
 }: LevelNodeProps) {
-  const locked = !progress.unlocked;
   const beaten = (progress.stars ?? 0) > 0;
 
   // Gentle pulse to draw the eye to the level you should play next.
@@ -59,7 +64,12 @@ export default function LevelNode({
           pressed && !locked && styles.pressed,
         ]}>
         {locked ? (
-          <Text style={styles.lockGlyph}>🔒</Text>
+          <View style={styles.lockedInner}>
+            <Text style={styles.lockGlyph}>🔒</Text>
+            {starsNeeded != null && (
+              <Text style={styles.lockReq}>{starsNeeded}🌟</Text>
+            )}
+          </View>
         ) : (
           <>
             <Text style={[styles.number, current && styles.numberCurrent]}>
@@ -71,6 +81,9 @@ export default function LevelNode({
               </View>
             )}
           </>
+        )}
+        {!locked && progress.bonusStar && (
+          <Text style={styles.bonusBadge}>🌟</Text>
         )}
       </Pressable>
     </Animated.View>
@@ -116,5 +129,8 @@ const styles = StyleSheet.create({
   number: {color: palette.text, fontSize: 24, fontWeight: '900'},
   numberCurrent: {color: '#FFFFFF', fontSize: 30},
   stars: {marginTop: 1},
-  lockGlyph: {fontSize: 26},
+  lockedInner: {alignItems: 'center', justifyContent: 'center'},
+  lockGlyph: {fontSize: 24},
+  lockReq: {color: palette.text, fontSize: 11, fontWeight: '900', marginTop: 1},
+  bonusBadge: {position: 'absolute', top: -2, right: -2, fontSize: 18},
 });

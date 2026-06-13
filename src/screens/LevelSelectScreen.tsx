@@ -19,7 +19,11 @@ import LevelNode, {LEVEL_NODE_SIZE} from '../components/LevelNode';
 import {palette, radius, shadow, spacing} from '../constants/theme';
 import {useSound} from '../hooks/useSound';
 import {LEVELS} from '../levels';
-import {MAX_STARS, useProgressStore} from '../store/progressStore';
+import {
+  MAX_BONUS_STARS,
+  MAX_STARS,
+  useProgressStore,
+} from '../store/progressStore';
 import {LevelProgress} from '../types';
 import {ScreenProps} from '../navigation/types';
 
@@ -47,6 +51,7 @@ export default function LevelSelectScreen({
 }: ScreenProps<'LevelSelect'>) {
   const levels = useProgressStore(s => s.levels);
   const totalStars = useProgressStore(s => s.totalStars());
+  const totalBonusStars = useProgressStore(s => s.totalBonusStars());
   const sound = useSound();
   const scrollRef = useRef<ScrollView>(null);
   const didInitialScroll = useRef(false);
@@ -60,24 +65,41 @@ export default function LevelSelectScreen({
 
   const progressOf = useCallback(
     (id: number): LevelProgress =>
-      levels[id] ?? {unlocked: id === 1, stars: 0, bestScore: 0},
+      levels[id] ?? {unlocked: id === 1, stars: 0, bestScore: 0, bonusStar: false},
     [levels],
   );
 
-  // The stop the player should play next: first unbeaten unlocked level,
-  // falling back to the last unlocked one.
+  // Lock state combines the sequential reach with the bonus-star gate. When a
+  // level is reached but short on bonus stars, `starsNeeded` carries the
+  // requirement (a count of bonus stars).
+  const lockState = useCallback(
+    (id: number, requiredStars = 0) => {
+      const reached = progressOf(id).unlocked;
+      const gateOk = totalBonusStars >= requiredStars;
+      return {
+        locked: !(reached && gateOk),
+        starsNeeded: reached && !gateOk ? requiredStars : undefined,
+      };
+    },
+    [progressOf, totalBonusStars],
+  );
+
+  // The stop the player should play next: first unbeaten playable level,
+  // falling back to the last playable one.
   const currentId = useMemo(() => {
     const firstUnbeaten = LEVELS.find(
-      l => progressOf(l.id).unlocked && progressOf(l.id).stars === 0,
+      l =>
+        !lockState(l.id, l.requiredStars).locked &&
+        progressOf(l.id).stars === 0,
     );
     if (firstUnbeaten) {
       return firstUnbeaten.id;
     }
     const lastUnlocked = [...LEVELS]
       .reverse()
-      .find(l => progressOf(l.id).unlocked);
+      .find(l => !lockState(l.id, l.requiredStars).locked);
     return lastUnlocked?.id ?? 1;
-  }, [progressOf]);
+  }, [lockState, progressOf]);
 
   // Start the map scrolled to the current level.
   const handleContentSize = useCallback(() => {
@@ -102,7 +124,8 @@ export default function LevelSelectScreen({
     for (let i = 0; i < LEVELS.length - 1; i++) {
       const from = nodeCenter(i);
       const to = nodeCenter(i + 1);
-      const open = progressOf(LEVELS[i + 1].id).unlocked;
+      const nextLevel = LEVELS[i + 1];
+      const open = !lockState(nextLevel.id, nextLevel.requiredStars).locked;
       for (let s = 1; s <= 4; s++) {
         const t = s / 5;
         dots.push(
@@ -121,7 +144,7 @@ export default function LevelSelectScreen({
       }
     }
     return dots;
-  }, [progressOf]);
+  }, [lockState]);
 
   return (
     <AppBackground>
@@ -136,7 +159,8 @@ export default function LevelSelectScreen({
           <View style={[styles.headerSide, styles.starsSide]}>
             <View style={styles.starsPill}>
               <Text style={styles.starsText}>
-                ⭐ {totalStars}/{MAX_STARS}
+                ⭐ {totalStars}/{MAX_STARS}   🌟 {totalBonusStars}/
+                {MAX_BONUS_STARS}
               </Text>
             </View>
           </View>
@@ -150,6 +174,10 @@ export default function LevelSelectScreen({
           {trail}
           {LEVELS.map((level, i) => {
             const {x, y} = nodeCenter(i);
+            const {locked, starsNeeded} = lockState(
+              level.id,
+              level.requiredStars,
+            );
             return (
               <View
                 key={level.id}
@@ -163,7 +191,9 @@ export default function LevelSelectScreen({
                 <LevelNode
                   level={level}
                   progress={progressOf(level.id)}
-                  current={level.id === currentId}
+                  locked={locked}
+                  starsNeeded={starsNeeded}
+                  current={!locked && level.id === currentId}
                   onPress={() =>
                     navigation.navigate('Game', {levelId: level.id})
                   }

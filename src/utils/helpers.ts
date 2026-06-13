@@ -1,5 +1,7 @@
 /** Miscellaneous formatting / math helpers. */
 
+import {STARS_PER_LEVEL} from '../constants';
+
 export function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
 }
@@ -11,10 +13,18 @@ export function formatScore(score: number): string {
     .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
-/** Returns a star string like "★★☆" for n out of 3. */
-export function starString(n: number): string {
-  const full = '★'.repeat(clamp(n, 0, 3));
-  const empty = '☆'.repeat(clamp(3 - n, 0, 3));
+/** Formats a millisecond duration as m:ss, e.g. 75000 -> "1:15". */
+export function formatSeconds(ms: number): string {
+  const total = Math.max(0, Math.ceil(ms / 1000));
+  const m = Math.floor(total / 60);
+  const s = total % 60;
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+/** Returns a star string like "★★☆☆" for n out of max. */
+export function starString(n: number, max: number = STARS_PER_LEVEL): string {
+  const full = '★'.repeat(clamp(n, 0, max));
+  const empty = '☆'.repeat(clamp(max - n, 0, max));
   return full + empty;
 }
 

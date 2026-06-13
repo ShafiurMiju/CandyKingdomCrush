@@ -18,6 +18,7 @@ interface WinOverlayProps {
 export default function WinOverlay({onNext, onReplay, onHome}: WinOverlayProps) {
   const score = useGameStore(s => s.score);
   const stars = useGameStore(s => s.starsEarned);
+  const bonusStar = useGameStore(s => s.bonusStarEarned);
   const level = useGameStore(s => s.level);
 
   return (
@@ -27,6 +28,12 @@ export default function WinOverlay({onNext, onReplay, onHome}: WinOverlayProps) 
       <Text style={styles.subtitle}>{level?.name}</Text>
 
       <StarRating stars={stars} size={42} animate />
+
+      {bonusStar ? (
+        <Text style={styles.bonus}>🌟 Bonus Star earned!</Text>
+      ) : (
+        <Text style={styles.bonusHint}>🌟 Bonus star: finish even higher!</Text>
+      )}
 
       <Text style={styles.scoreLabel}>Score</Text>
       <Text style={styles.score}>{formatScore(score)}</Text>
@@ -58,6 +65,8 @@ const styles = StyleSheet.create({
   emoji: {fontSize: 48},
   title: {color: palette.panel, fontSize: 26, fontWeight: '900', marginTop: spacing.xs},
   subtitle: {color: 'rgba(255,255,255,0.8)', fontSize: 15, marginBottom: spacing.md},
+  bonus: {color: palette.star, fontSize: 16, fontWeight: '900', marginTop: spacing.md},
+  bonusHint: {color: 'rgba(255,255,255,0.6)', fontSize: 12, fontWeight: '700', marginTop: spacing.md},
   scoreLabel: {color: 'rgba(255,255,255,0.8)', fontSize: 13, marginTop: spacing.lg},
   score: {color: palette.accent, fontSize: 34, fontWeight: '900', marginBottom: spacing.lg},
   allDone: {color: palette.success, fontSize: 16, fontWeight: '800', marginVertical: spacing.md, textAlign: 'center'},

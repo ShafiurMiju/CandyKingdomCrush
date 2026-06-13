@@ -15,9 +15,14 @@ import {useCallback, useRef, useState} from 'react';
 import {ANIM} from '../constants';
 import {reshuffleBoard} from '../game-engine/BoardGenerator';
 import {resolveBoard} from '../game-engine/CascadeEngine';
-import {evaluateLevel, countChocolate} from '../game-engine/LevelEngine';
+import {
+  countChocolate,
+  evaluateLevel,
+  isTimedLevel,
+} from '../game-engine/LevelEngine';
 import {ALL_COLORS, spreadChocolate} from '../game-engine/PowerUpEngine';
 import {
+  findAvailableMove,
   hasAvailableMove,
   involvesColorBomb,
   isSwapAllowed,
@@ -61,6 +66,74 @@ export function useGameBoard() {
         return;
       }
       const board = store.board;
+
+      // Plays a resolved cascade's steps with animation (shared by a manual
+      // move and the end-of-level auto-play); banks score as each step lands.
+      const playSteps = async (
+        steps: ReturnType<typeof resolveBoard>,
+        timing: {pop: number; fall: number},
+      ) => {
+        for (const step of steps) {
+          store.setCombo(step.combo);
+          store.addScore(step.event.scoreGained);
+          if (step.event.detonated.length > 0) {
+            sound.play('special');
+          } else {
+            sound.play('match');
+          }
+          if (step.combo >= 3) {
+            sound.play('combo');
+          }
+          const preBoard = useGameStore.getState().board;
+          const popPositions = [
+            ...step.event.cleared,
+            ...step.event.chocolateCleared,
+          ];
+          const poppingIds = popPositions
+            .map(p => preBoard[p.row]?.[p.col]?.id)
+            .filter((id): id is number => id != null);
+          store.setPopping(poppingIds);
+          await delay(timing.pop);
+          store.setPopping([]);
+          store.setBoard(step.boardAfterGravity);
+          await delay(timing.fall);
+        }
+        store.setCombo(0);
+      };
+
+      // "Sugar crush": once a move level is won with moves to spare, auto-play
+      // the remaining moves as a snappy bonus sequence, banking score (which
+      // feeds the final star + bonus-star tally). Bounded by `guard`.
+      const runAutoPlay = async () => {
+        const AUTO = {swap: 110, pop: 120, fall: 150};
+        await delay(ANIM.pop);
+        let guard = 40;
+        while (useGameStore.getState().movesLeft > 0 && guard-- > 0) {
+          let b = useGameStore.getState().board;
+          let mv = findAvailableMove(b);
+          if (!mv) {
+            // Dead board: reshuffle once and retry; give up if still stuck.
+            b = reshuffleBoard(b);
+            store.setBoard(b);
+            await delay(AUTO.fall);
+            mv = findAvailableMove(b);
+            if (!mv) {
+              break;
+            }
+          }
+          const sw = swapCells(b, mv.from, mv.to);
+          const ids = [
+            b[mv.from.row][mv.from.col]?.id,
+            b[mv.to.row][mv.to.col]?.id,
+          ].filter((id): id is number => id != null);
+          store.setSwapping(ids);
+          store.setBoard(sw);
+          await delay(AUTO.swap);
+          store.setSwapping([]);
+          store.consumeMove();
+          await playSteps(resolveBoard(sw), {pop: AUTO.pop, fall: AUTO.fall});
+        }
+      };
 
       if (!isSwapAllowed(board, from, to)) {
         sound.play('invalid');
@@ -118,38 +191,7 @@ export function useGameBoard() {
 
       const steps = resolveBoard(swapped, options);
       store.consumeMove();
-
-      // Play each cascade step: pop the cleared candies, then gravity/refill.
-      for (const step of steps) {
-        store.setCombo(step.combo);
-        store.addScore(step.event.scoreGained);
-        if (step.event.detonated.length > 0) {
-          sound.play('special');
-        } else {
-          sound.play('match');
-        }
-        if (step.combo >= 3) {
-          sound.play('combo');
-        }
-
-        // Mark cleared / chocolate candies as popping (still mounted) so they
-        // animate out before the board state removes them.
-        const preBoard = useGameStore.getState().board;
-        const popPositions = [...step.event.cleared, ...step.event.chocolateCleared];
-        const poppingIds = popPositions
-          .map(p => preBoard[p.row]?.[p.col]?.id)
-          .filter((id): id is number => id != null);
-        store.setPopping(poppingIds);
-        await delay(ANIM.pop);
-
-        // Jump straight to the post-gravity board: surviving candies animate
-        // down from their current positions, new candies fall in from the top,
-        // and the popped candies (already faded out) unmount cleanly.
-        store.setPopping([]);
-        store.setBoard(step.boardAfterGravity);
-        await delay(ANIM.fall);
-      }
-      store.setCombo(0);
+      await playSteps(steps, {pop: ANIM.pop, fall: ANIM.fall});
 
       // Chocolate spreads once per move if none was cleared this move.
       let finalBoard = useGameStore.getState().board;
@@ -165,20 +207,34 @@ export function useGameBoard() {
         }
       }
 
-      // Evaluate the level.
+      // Evaluate the level (move levels finish the instant the target is met).
       const latest = useGameStore.getState();
       const level = latest.level!;
-      const result = evaluateLevel(
-        level,
-        finalBoard,
-        latest.score,
-        latest.movesLeft,
-      );
+      let result = evaluateLevel(level, finalBoard, latest.score, {
+        movesLeft: latest.movesLeft,
+        timeLeftMs: latest.timeLeftMs,
+        timeLimitMs: latest.timeLimitMs,
+      });
 
       if (result.status === 'won') {
+        // Move levels auto-play any leftover moves for bonus, then re-evaluate
+        // the final (boosted) score for the real star + bonus-star tally. The
+        // re-eval can only ever stay 'won' (auto-play only adds score and never
+        // un-clears an objective), but we guard against downgrading the win.
+        if (!isTimedLevel(level) && useGameStore.getState().movesLeft > 0) {
+          await runAutoPlay();
+          const after = useGameStore.getState();
+          const reeval = evaluateLevel(level, after.board, after.score, {
+            movesLeft: after.movesLeft,
+          });
+          if (reeval.status === 'won') {
+            result = reeval;
+          }
+        }
+        const fin = useGameStore.getState();
         sound.playMusic('win');
-        recordResult(level.id, result.stars, latest.score);
-        store.finish('won', result.stars);
+        recordResult(level.id, result.stars, fin.score, result.bonusStar);
+        store.finish('won', result.stars, result.bonusStar);
       } else if (result.status === 'lost') {
         sound.playMusic('lose');
         store.finish('lost', 0);

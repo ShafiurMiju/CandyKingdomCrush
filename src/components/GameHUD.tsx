@@ -7,10 +7,10 @@
 
 import React from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import {objectiveProgress} from '../game-engine/LevelEngine';
+import {isTimedLevel, objectiveProgress} from '../game-engine/LevelEngine';
 import {palette, radius, shadow, spacing} from '../constants/theme';
 import {useGameStore} from '../store/gameStore';
-import {formatScore} from '../utils/helpers';
+import {formatScore, formatSeconds} from '../utils/helpers';
 
 interface GameHUDProps {
   onPause: () => void;
@@ -21,11 +21,13 @@ export default function GameHUD({onPause}: GameHUDProps) {
   const board = useGameStore(s => s.board);
   const score = useGameStore(s => s.score);
   const movesLeft = useGameStore(s => s.movesLeft);
+  const timeLeftMs = useGameStore(s => s.timeLeftMs);
 
   if (!level) {
     return null;
   }
 
+  const timed = isTimedLevel(level);
   const progress = objectiveProgress(level, board, score);
   const ratio =
     progress.target > 0 ? Math.min(1, progress.current / progress.target) : 0;
@@ -53,7 +55,11 @@ export default function GameHUD({onPause}: GameHUDProps) {
         <View style={styles.statsRow}>
           <Stat label="Score" value={formatScore(score)} />
           <View style={styles.vDivider} />
-          <Stat label="Moves" value={String(movesLeft)} highlight />
+          {timed ? (
+            <Stat label="Time" value={formatSeconds(timeLeftMs)} highlight />
+          ) : (
+            <Stat label="Moves" value={String(movesLeft)} highlight />
+          )}
           <View style={styles.vDivider} />
           <Stat label="Target" value={formatScore(level.targetScore)} />
         </View>

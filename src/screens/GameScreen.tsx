@@ -12,6 +12,7 @@ import PauseOverlay from '../components/PauseOverlay';
 import PowerUps from '../components/PowerUps';
 import WinOverlay from '../components/WinOverlay';
 import {useGameBoard} from '../hooks/useGameBoard';
+import {useLevelTimer} from '../hooks/useLevelTimer';
 import {useSound} from '../hooks/useSound';
 import {getLevel, nextLevelId} from '../levels';
 import {useGameStore} from '../store/gameStore';
@@ -28,6 +29,8 @@ export default function GameScreen({navigation, route}: ScreenProps<'Game'>) {
   const sound = useSound();
 
   const {onSwipe, invalidNonce} = useGameBoard();
+  // Drives the countdown + timeout settlement for time-based levels.
+  useLevelTimer();
 
   // (Re)start whenever the target level changes. Showing an interstitial here
   // covers both "level start" (from the menu) and "level up" (Next replaces the

@@ -30,6 +30,34 @@ export const SCORE_ICE_BREAK = 25;
 /** Bonus per chocolate block cleared. */
 export const SCORE_CHOCOLATE_CLEAR = 40;
 
+// ---------------------------------------------------------------------------
+// Stars
+// ---------------------------------------------------------------------------
+
+/** Visible star rating shown everywhere is 0..3. */
+export const STARS_PER_LEVEL = 3;
+
+/**
+ * Move/score levels finish the instant the target is reached; leftover moves
+ * then auto-play for bonus. Stars come from the FINAL score (incl. that bonus)
+ * as a multiple of targetScore — [1★, 2★, 3★]. 1.0 = just reaching target.
+ */
+export const MOVE_STAR_RATIOS = [1.0, 1.5, 2.0];
+
+/**
+ * Time levels: fraction of the objective completed when the timer runs out —
+ * [1★, 2★]. Completing the objective (100%) is the full 3★.
+ */
+export const TIME_STAR_RATIOS = [0.5, 0.7];
+
+/**
+ * The separate "bonus star" (NOT part of the 0..3 rating; collected to unlock
+ * gated levels) is earned by mastering a level:
+ *  - move levels: final score ≥ this multiple of target (a very efficient win), or
+ *  - time levels: completing the objective within HALF the time limit.
+ */
+export const BONUS_STAR_MOVE_RATIO = 2.5;
+
 /**
  * Combo multiplier applied at cascade step N (1-based). Step 1 is x1, and each
  * additional cascade in the same move ramps the multiplier up.

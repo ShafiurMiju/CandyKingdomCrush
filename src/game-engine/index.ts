@@ -21,4 +21,17 @@ export {isValidSwap, swapCells, involvesColorBomb, hasAvailableMove} from './Swa
 export {applyGravityAndRefill} from './GravityEngine';
 export {resolveBoard, computeClear} from './CascadeEngine';
 export {computeBlast, spreadChocolate, ALL_COLORS} from './PowerUpEngine';
-export {evaluateLevel, computeStars, objectiveProgress, countIceLayers, countChocolate, countLocks} from './LevelEngine';
+export {
+  evaluateLevel,
+  isObjectiveComplete,
+  starsForScore,
+  starsForTime,
+  bonusStarForScore,
+  bonusStarForTime,
+  completionRatio,
+  isTimedLevel,
+  objectiveProgress,
+  countIceLayers,
+  countChocolate,
+  countLocks,
+} from './LevelEngine';

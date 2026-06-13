@@ -6,7 +6,16 @@
 import {LevelConfig} from '../types';
 import rawLevels from './levels.json';
 
-export const LEVELS: LevelConfig[] = rawLevels as LevelConfig[];
+export const LEVELS: LevelConfig[] = (rawLevels as LevelConfig[]).map(level => {
+  // Fail fast on a misconfigured time level: without a positive timeLimitSec
+  // the countdown would start at 0 and the level would be unwinnable.
+  if (level.mode === 'time' && !(level.timeLimitSec && level.timeLimitSec > 0)) {
+    throw new Error(
+      `Level ${level.id} ("${level.name}") has mode:'time' but no positive timeLimitSec`,
+    );
+  }
+  return level;
+});
 
 export const TOTAL_LEVELS = LEVELS.length;
 

@@ -128,6 +128,13 @@ export interface CascadeStep {
 /** Win objective for a level. */
 export type ObjectiveType = 'score' | 'clear-ice' | 'clear-chocolate';
 
+/**
+ * How a level is bounded:
+ *  - 'moves' : a fixed swap budget; play to the last move (stars by score %).
+ *  - 'time'  : a countdown timer instead of moves (stars by % completed).
+ */
+export type LevelMode = 'moves' | 'time';
+
 /** Placement of a frosted (ice) cell at level start. */
 export interface IcePlacement {
   row: number;
@@ -153,12 +160,16 @@ export interface LevelConfig {
   name: string;
   /** Primary objective; "score" also gates on reaching {@link targetScore}. */
   objective: ObjectiveType;
-  /** Score required to win (also used for the 1-star threshold floor). */
+  /** 100% mark for star rating; score levels reach it for 2★. */
   targetScore: number;
-  /** Maximum number of swaps allowed. */
+  /** Maximum number of swaps allowed (move levels). Ignored for time levels. */
   moves: number;
-  /** Score thresholds for [1★, 2★, 3★]. */
-  starThresholds: [number, number, number];
+  /** Bounding mode. Defaults to 'moves' when omitted. */
+  mode?: LevelMode;
+  /** Countdown length in seconds (required for `mode: 'time'`). */
+  timeLimitSec?: number;
+  /** Total stars (across all levels) needed before this level unlocks. */
+  requiredStars?: number;
   ice?: IcePlacement[];
   locks?: LockPlacement[];
   chocolate?: ChocolatePlacement[];
@@ -169,8 +180,10 @@ export interface LevelConfig {
 /** Per-level saved progress. */
 export interface LevelProgress {
   unlocked: boolean;
-  stars: number; // 0..3
+  stars: number; // 0..3 (the visible rating)
   bestScore: number;
+  /** The separate "bonus star" — mastery reward, currency for unlocking gates. */
+  bonusStar: boolean;
 }
 
 /** The outcome of a finished level. */

@@ -57,10 +57,12 @@ export function isValidSwap(board: Board, a: Position, b: Position): boolean {
 }
 
 /**
- * Returns true if the board currently has at least one legal, match-making move
- * available (used to detect / reshuffle dead boards).
+ * Returns the first legal, match-making swap on the board, or null if none
+ * exists. Used to detect dead boards and to drive the end-of-level auto-play.
  */
-export function hasAvailableMove(board: Board): boolean {
+export function findAvailableMove(
+  board: Board,
+): {from: Position; to: Position} | null {
   for (let r = 0; r < board.length; r++) {
     for (let c = 0; c < board[r].length; c++) {
       // Try swapping right and down only (covers all adjacent pairs once).
@@ -68,12 +70,20 @@ export function hasAvailableMove(board: Board): boolean {
       const right: Position = {row: r, col: c + 1};
       const down: Position = {row: r + 1, col: c};
       if (isSwapAllowed(board, here, right) && wouldCreateMatch(board, here, right)) {
-        return true;
+        return {from: here, to: right};
       }
       if (isSwapAllowed(board, here, down) && wouldCreateMatch(board, here, down)) {
-        return true;
+        return {from: here, to: down};
       }
     }
   }
-  return false;
+  return null;
+}
+
+/**
+ * Returns true if the board currently has at least one legal, match-making move
+ * available (used to detect / reshuffle dead boards).
+ */
+export function hasAvailableMove(board: Board): boolean {
+  return findAvailableMove(board) !== null;
 }

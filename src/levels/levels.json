@@ -5,7 +5,6 @@
     "objective": "score",
     "targetScore": 1000,
     "moves": 25,
-    "starThresholds": [1000, 1600, 2300],
     "description": "Learn the ropes. Match 3 or more candies."
   },
   {
@@ -14,7 +13,6 @@
     "objective": "score",
     "targetScore": 1500,
     "moves": 24,
-    "starThresholds": [1500, 2200, 3000],
     "description": "Chain a few matches together for combos."
   },
   {
@@ -23,7 +21,6 @@
     "objective": "score",
     "targetScore": 2000,
     "moves": 23,
-    "starThresholds": [2000, 2900, 3900],
     "description": "Make a match of 4 to earn a striped candy."
   },
   {
@@ -32,7 +29,6 @@
     "objective": "score",
     "targetScore": 2800,
     "moves": 22,
-    "starThresholds": [2800, 3800, 5000],
     "description": "Try an L or T shape for a wrapped candy."
   },
   {
@@ -41,8 +37,9 @@
     "objective": "score",
     "targetScore": 3500,
     "moves": 20,
-    "starThresholds": [3500, 4800, 6200],
-    "description": "Five in a row makes a colour bomb!"
+    "mode": "time",
+    "timeLimitSec": 75,
+    "description": "Race the clock! Reach the target before time runs out."
   },
   {
     "id": 6,
@@ -50,14 +47,30 @@
     "objective": "clear-ice",
     "targetScore": 3000,
     "moves": 24,
-    "starThresholds": [3000, 4200, 5500],
-    "description": "Break the ice by matching candies next to it.",
+    "requiredStars": 1,
     "ice": [
-      {"row": 0, "col": 3, "layers": 1},
-      {"row": 0, "col": 4, "layers": 1},
-      {"row": 7, "col": 3, "layers": 1},
-      {"row": 7, "col": 4, "layers": 1}
-    ]
+      {
+        "row": 0,
+        "col": 3,
+        "layers": 1
+      },
+      {
+        "row": 0,
+        "col": 4,
+        "layers": 1
+      },
+      {
+        "row": 7,
+        "col": 3,
+        "layers": 1
+      },
+      {
+        "row": 7,
+        "col": 4,
+        "layers": 1
+      }
+    ],
+    "description": "Break the ice by matching candies next to it."
   },
   {
     "id": 7,
@@ -65,16 +78,39 @@
     "objective": "clear-ice",
     "targetScore": 3500,
     "moves": 24,
-    "starThresholds": [3500, 4800, 6300],
-    "description": "Ice in the corners and the heart of the board.",
     "ice": [
-      {"row": 0, "col": 0, "layers": 1},
-      {"row": 0, "col": 7, "layers": 1},
-      {"row": 7, "col": 0, "layers": 1},
-      {"row": 7, "col": 7, "layers": 1},
-      {"row": 3, "col": 3, "layers": 2},
-      {"row": 4, "col": 4, "layers": 2}
-    ]
+      {
+        "row": 0,
+        "col": 0,
+        "layers": 1
+      },
+      {
+        "row": 0,
+        "col": 7,
+        "layers": 1
+      },
+      {
+        "row": 7,
+        "col": 0,
+        "layers": 1
+      },
+      {
+        "row": 7,
+        "col": 7,
+        "layers": 1
+      },
+      {
+        "row": 3,
+        "col": 3,
+        "layers": 2
+      },
+      {
+        "row": 4,
+        "col": 4,
+        "layers": 2
+      }
+    ],
+    "description": "Ice in the corners and the heart of the board."
   },
   {
     "id": 8,
@@ -82,16 +118,39 @@
     "objective": "clear-ice",
     "targetScore": 4000,
     "moves": 22,
-    "starThresholds": [4000, 5400, 7000],
-    "description": "A ridge of ice splits the top row.",
     "ice": [
-      {"row": 0, "col": 2, "layers": 1},
-      {"row": 0, "col": 3, "layers": 1},
-      {"row": 0, "col": 4, "layers": 1},
-      {"row": 0, "col": 5, "layers": 1},
-      {"row": 1, "col": 3, "layers": 2},
-      {"row": 1, "col": 4, "layers": 2}
-    ]
+      {
+        "row": 0,
+        "col": 2,
+        "layers": 1
+      },
+      {
+        "row": 0,
+        "col": 3,
+        "layers": 1
+      },
+      {
+        "row": 0,
+        "col": 4,
+        "layers": 1
+      },
+      {
+        "row": 0,
+        "col": 5,
+        "layers": 1
+      },
+      {
+        "row": 1,
+        "col": 3,
+        "layers": 2
+      },
+      {
+        "row": 1,
+        "col": 4,
+        "layers": 2
+      }
+    ],
+    "description": "A ridge of ice splits the top row."
   },
   {
     "id": 9,
@@ -99,14 +158,29 @@
     "objective": "clear-ice",
     "targetScore": 4500,
     "moves": 22,
-    "starThresholds": [4500, 6000, 7800],
-    "description": "Thick double ice guards the centre.",
     "ice": [
-      {"row": 2, "col": 2, "layers": 2},
-      {"row": 2, "col": 5, "layers": 2},
-      {"row": 5, "col": 2, "layers": 2},
-      {"row": 5, "col": 5, "layers": 2}
-    ]
+      {
+        "row": 2,
+        "col": 2,
+        "layers": 2
+      },
+      {
+        "row": 2,
+        "col": 5,
+        "layers": 2
+      },
+      {
+        "row": 5,
+        "col": 2,
+        "layers": 2
+      },
+      {
+        "row": 5,
+        "col": 5,
+        "layers": 2
+      }
+    ],
+    "description": "Thick double ice guards the centre."
   },
   {
     "id": 10,
@@ -114,18 +188,49 @@
     "objective": "clear-ice",
     "targetScore": 5000,
     "moves": 20,
-    "starThresholds": [5000, 6800, 8800],
-    "description": "A frozen ring locks down the board.",
     "ice": [
-      {"row": 2, "col": 2, "layers": 2},
-      {"row": 2, "col": 3, "layers": 2},
-      {"row": 2, "col": 4, "layers": 2},
-      {"row": 2, "col": 5, "layers": 2},
-      {"row": 5, "col": 2, "layers": 2},
-      {"row": 5, "col": 3, "layers": 2},
-      {"row": 5, "col": 4, "layers": 2},
-      {"row": 5, "col": 5, "layers": 2}
-    ]
+      {
+        "row": 2,
+        "col": 2,
+        "layers": 2
+      },
+      {
+        "row": 2,
+        "col": 3,
+        "layers": 2
+      },
+      {
+        "row": 2,
+        "col": 4,
+        "layers": 2
+      },
+      {
+        "row": 2,
+        "col": 5,
+        "layers": 2
+      },
+      {
+        "row": 5,
+        "col": 2,
+        "layers": 2
+      },
+      {
+        "row": 5,
+        "col": 3,
+        "layers": 2
+      },
+      {
+        "row": 5,
+        "col": 4,
+        "layers": 2
+      },
+      {
+        "row": 5,
+        "col": 5,
+        "layers": 2
+      }
+    ],
+    "description": "A frozen ring locks down the board."
   },
   {
     "id": 11,
@@ -133,14 +238,26 @@
     "objective": "score",
     "targetScore": 4000,
     "moves": 20,
-    "starThresholds": [4000, 5400, 7000],
-    "description": "Locked candies won't budge until you match beside them.",
+    "requiredStars": 3,
     "locks": [
-      {"row": 3, "col": 3},
-      {"row": 3, "col": 4},
-      {"row": 4, "col": 3},
-      {"row": 4, "col": 4}
-    ]
+      {
+        "row": 3,
+        "col": 3
+      },
+      {
+        "row": 3,
+        "col": 4
+      },
+      {
+        "row": 4,
+        "col": 3
+      },
+      {
+        "row": 4,
+        "col": 4
+      }
+    ],
+    "description": "Locked candies won't budge until you match beside them."
   },
   {
     "id": 12,
@@ -148,16 +265,33 @@
     "objective": "score",
     "targetScore": 4500,
     "moves": 20,
-    "starThresholds": [4500, 6000, 7800],
-    "description": "Locks scattered to every corner.",
     "locks": [
-      {"row": 0, "col": 0},
-      {"row": 0, "col": 7},
-      {"row": 7, "col": 0},
-      {"row": 7, "col": 7},
-      {"row": 3, "col": 3},
-      {"row": 4, "col": 4}
-    ]
+      {
+        "row": 0,
+        "col": 0
+      },
+      {
+        "row": 0,
+        "col": 7
+      },
+      {
+        "row": 7,
+        "col": 0
+      },
+      {
+        "row": 7,
+        "col": 7
+      },
+      {
+        "row": 3,
+        "col": 3
+      },
+      {
+        "row": 4,
+        "col": 4
+      }
+    ],
+    "description": "Locks scattered to every corner."
   },
   {
     "id": 13,
@@ -165,16 +299,35 @@
     "objective": "score",
     "targetScore": 5000,
     "moves": 18,
-    "starThresholds": [5000, 6700, 8600],
-    "description": "Tighter moves, more locks.",
+    "mode": "time",
+    "timeLimitSec": 90,
     "locks": [
-      {"row": 2, "col": 3},
-      {"row": 2, "col": 4},
-      {"row": 5, "col": 3},
-      {"row": 5, "col": 4},
-      {"row": 3, "col": 1},
-      {"row": 4, "col": 6}
-    ]
+      {
+        "row": 2,
+        "col": 3
+      },
+      {
+        "row": 2,
+        "col": 4
+      },
+      {
+        "row": 5,
+        "col": 3
+      },
+      {
+        "row": 5,
+        "col": 4
+      },
+      {
+        "row": 3,
+        "col": 1
+      },
+      {
+        "row": 4,
+        "col": 6
+      }
+    ],
+    "description": "Beat the timer — and the locks. No move limit, just seconds."
   },
   {
     "id": 14,
@@ -182,15 +335,29 @@
     "objective": "score",
     "targetScore": 5500,
     "moves": 18,
-    "starThresholds": [5500, 7400, 9500],
-    "description": "A locked column cuts the board in two.",
     "locks": [
-      {"row": 1, "col": 4},
-      {"row": 2, "col": 4},
-      {"row": 3, "col": 4},
-      {"row": 4, "col": 4},
-      {"row": 5, "col": 4}
-    ]
+      {
+        "row": 1,
+        "col": 4
+      },
+      {
+        "row": 2,
+        "col": 4
+      },
+      {
+        "row": 3,
+        "col": 4
+      },
+      {
+        "row": 4,
+        "col": 4
+      },
+      {
+        "row": 5,
+        "col": 4
+      }
+    ],
+    "description": "A locked column cuts the board in two."
   },
   {
     "id": 15,
@@ -198,18 +365,41 @@
     "objective": "score",
     "targetScore": 6000,
     "moves": 16,
-    "starThresholds": [6000, 8000, 10200],
-    "description": "Only 16 moves. Plan every swap.",
     "locks": [
-      {"row": 2, "col": 2},
-      {"row": 2, "col": 5},
-      {"row": 5, "col": 2},
-      {"row": 5, "col": 5},
-      {"row": 3, "col": 3},
-      {"row": 3, "col": 4},
-      {"row": 4, "col": 3},
-      {"row": 4, "col": 4}
-    ]
+      {
+        "row": 2,
+        "col": 2
+      },
+      {
+        "row": 2,
+        "col": 5
+      },
+      {
+        "row": 5,
+        "col": 2
+      },
+      {
+        "row": 5,
+        "col": 5
+      },
+      {
+        "row": 3,
+        "col": 3
+      },
+      {
+        "row": 3,
+        "col": 4
+      },
+      {
+        "row": 4,
+        "col": 3
+      },
+      {
+        "row": 4,
+        "col": 4
+      }
+    ],
+    "description": "Only 16 moves. Plan every swap."
   },
   {
     "id": 16,
@@ -217,18 +407,40 @@
     "objective": "clear-ice",
     "targetScore": 5000,
     "moves": 18,
-    "starThresholds": [5000, 6700, 8600],
-    "description": "Ice up top, locks down below.",
+    "requiredStars": 5,
     "ice": [
-      {"row": 0, "col": 3, "layers": 2},
-      {"row": 0, "col": 4, "layers": 2},
-      {"row": 1, "col": 3, "layers": 1},
-      {"row": 1, "col": 4, "layers": 1}
+      {
+        "row": 0,
+        "col": 3,
+        "layers": 2
+      },
+      {
+        "row": 0,
+        "col": 4,
+        "layers": 2
+      },
+      {
+        "row": 1,
+        "col": 3,
+        "layers": 1
+      },
+      {
+        "row": 1,
+        "col": 4,
+        "layers": 1
+      }
     ],
     "locks": [
-      {"row": 7, "col": 3},
-      {"row": 7, "col": 4}
-    ]
+      {
+        "row": 7,
+        "col": 3
+      },
+      {
+        "row": 7,
+        "col": 4
+      }
+    ],
+    "description": "Ice up top, locks down below."
   },
   {
     "id": 17,
@@ -236,16 +448,29 @@
     "objective": "clear-chocolate",
     "targetScore": 5500,
     "moves": 18,
-    "starThresholds": [5500, 7400, 9500],
-    "description": "Clear the chocolate before it spreads!",
-    "chocolate": [
-      {"row": 3, "col": 3},
-      {"row": 4, "col": 4}
-    ],
     "ice": [
-      {"row": 0, "col": 0, "layers": 1},
-      {"row": 0, "col": 7, "layers": 1}
-    ]
+      {
+        "row": 0,
+        "col": 0,
+        "layers": 1
+      },
+      {
+        "row": 0,
+        "col": 7,
+        "layers": 1
+      }
+    ],
+    "chocolate": [
+      {
+        "row": 3,
+        "col": 3
+      },
+      {
+        "row": 4,
+        "col": 4
+      }
+    ],
+    "description": "Clear the chocolate before it spreads!"
   },
   {
     "id": 18,
@@ -253,16 +478,27 @@
     "objective": "clear-chocolate",
     "targetScore": 6000,
     "moves": 16,
-    "starThresholds": [6000, 8000, 10200],
-    "description": "Chocolate and locks, fewer moves.",
-    "chocolate": [
-      {"row": 0, "col": 3},
-      {"row": 7, "col": 4}
-    ],
     "locks": [
-      {"row": 3, "col": 0},
-      {"row": 4, "col": 7}
-    ]
+      {
+        "row": 3,
+        "col": 0
+      },
+      {
+        "row": 4,
+        "col": 7
+      }
+    ],
+    "chocolate": [
+      {
+        "row": 0,
+        "col": 3
+      },
+      {
+        "row": 7,
+        "col": 4
+      }
+    ],
+    "description": "Chocolate and locks, fewer moves."
   },
   {
     "id": 19,
@@ -270,21 +506,45 @@
     "objective": "clear-ice",
     "targetScore": 6500,
     "moves": 16,
-    "starThresholds": [6500, 8700, 11000],
-    "description": "Every obstacle stands between you and the ice.",
     "ice": [
-      {"row": 2, "col": 3, "layers": 2},
-      {"row": 2, "col": 4, "layers": 2},
-      {"row": 5, "col": 3, "layers": 2},
-      {"row": 5, "col": 4, "layers": 2}
+      {
+        "row": 2,
+        "col": 3,
+        "layers": 2
+      },
+      {
+        "row": 2,
+        "col": 4,
+        "layers": 2
+      },
+      {
+        "row": 5,
+        "col": 3,
+        "layers": 2
+      },
+      {
+        "row": 5,
+        "col": 4,
+        "layers": 2
+      }
     ],
     "locks": [
-      {"row": 3, "col": 0},
-      {"row": 4, "col": 7}
+      {
+        "row": 3,
+        "col": 0
+      },
+      {
+        "row": 4,
+        "col": 7
+      }
     ],
     "chocolate": [
-      {"row": 0, "col": 0}
-    ]
+      {
+        "row": 0,
+        "col": 0
+      }
+    ],
+    "description": "Every obstacle stands between you and the ice."
   },
   {
     "id": 20,
@@ -292,23 +552,56 @@
     "objective": "clear-chocolate",
     "targetScore": 7500,
     "moves": 15,
-    "starThresholds": [7500, 10000, 12800],
-    "description": "The final gauntlet. Good luck, Candy Monarch!",
-    "chocolate": [
-      {"row": 0, "col": 0},
-      {"row": 7, "col": 7}
-    ],
     "ice": [
-      {"row": 0, "col": 3, "layers": 2},
-      {"row": 0, "col": 4, "layers": 2},
-      {"row": 7, "col": 3, "layers": 2},
-      {"row": 7, "col": 4, "layers": 2}
+      {
+        "row": 0,
+        "col": 3,
+        "layers": 2
+      },
+      {
+        "row": 0,
+        "col": 4,
+        "layers": 2
+      },
+      {
+        "row": 7,
+        "col": 3,
+        "layers": 2
+      },
+      {
+        "row": 7,
+        "col": 4,
+        "layers": 2
+      }
     ],
     "locks": [
-      {"row": 3, "col": 3},
-      {"row": 3, "col": 4},
-      {"row": 4, "col": 3},
-      {"row": 4, "col": 4}
-    ]
+      {
+        "row": 3,
+        "col": 3
+      },
+      {
+        "row": 3,
+        "col": 4
+      },
+      {
+        "row": 4,
+        "col": 3
+      },
+      {
+        "row": 4,
+        "col": 4
+      }
+    ],
+    "chocolate": [
+      {
+        "row": 0,
+        "col": 0
+      },
+      {
+        "row": 7,
+        "col": 7
+      }
+    ],
+    "description": "The final gauntlet. Good luck, Candy Monarch!"
   }
 ]

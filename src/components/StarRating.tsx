@@ -1,4 +1,4 @@
-/** Displays a 0..3 star rating, optionally popping the earned stars in. */
+/** Displays a 0..maxStars star rating, optionally popping the earned stars in. */
 
 import React, {useEffect} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
@@ -8,18 +8,26 @@ import Animated, {
   withDelay,
   withSpring,
 } from 'react-native-reanimated';
+import {STARS_PER_LEVEL} from '../constants';
 import {palette} from '../constants/theme';
 
 interface StarRatingProps {
   stars: number;
   size?: number;
   animate?: boolean;
+  /** Number of star slots to render (defaults to the per-level max). */
+  maxStars?: number;
 }
 
-export default function StarRating({stars, size = 22, animate}: StarRatingProps) {
+export default function StarRating({
+  stars,
+  size = 22,
+  animate,
+  maxStars = STARS_PER_LEVEL,
+}: StarRatingProps) {
   return (
     <View style={styles.row}>
-      {[0, 1, 2].map(i => (
+      {Array.from({length: maxStars}, (_, i) => (
         <Star key={i} filled={i < stars} index={i} size={size} animate={!!animate} />
       ))}
     </View>
