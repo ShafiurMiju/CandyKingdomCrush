@@ -40,9 +40,9 @@ export const STARS_PER_LEVEL = 3;
 /**
  * Move/score levels finish the instant the target is reached; leftover moves
  * then auto-play for bonus. Stars come from the FINAL score (incl. that bonus)
- * as a multiple of targetScore — [1★, 2★, 3★]. 1.0 = just reaching target.
+ * as a multiple of targetScore — [1★, 2★, 3★]: 0.8 = 80%, 1.0 = target, 1.2 = 120%.
  */
-export const MOVE_STAR_RATIOS = [1.0, 1.5, 2.0];
+export const MOVE_STAR_RATIOS = [0.8, 1.0, 1.2];
 
 /**
  * Time levels: fraction of the objective completed when the timer runs out —

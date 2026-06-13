@@ -108,10 +108,10 @@ describe('LevelEngine — move/score stars (finish-at-target)', () => {
   const board = emptyBoard();
 
   it('rates the FINAL score (after auto-play) by multiple of target', () => {
-    expect(starsForScore(1999, 2000)).toBe(0); // < target
-    expect(starsForScore(2000, 2000)).toBe(1); // 1.0x = reached target
-    expect(starsForScore(3000, 2000)).toBe(2); // 1.5x
-    expect(starsForScore(4000, 2000)).toBe(3); // 2.0x
+    expect(starsForScore(1599, 2000)).toBe(0); // < 0.8x
+    expect(starsForScore(1600, 2000)).toBe(1); // 0.8x = 80%
+    expect(starsForScore(2000, 2000)).toBe(2); // 1.0x = target
+    expect(starsForScore(2400, 2000)).toBe(3); // 1.2x = 120%
     expect(starsForScore(10000, 2000)).toBe(3); // capped at 3
   });
 
@@ -121,9 +121,10 @@ describe('LevelEngine — move/score stars (finish-at-target)', () => {
   });
 
   it('finishes the instant the target is reached, even with moves left', () => {
+    // Reaching exactly target (1.0x) is 2★; leftover auto-play then pushes higher.
     const r = evaluateLevel(scoreLevel, board, 2000, {movesLeft: 10});
     expect(r.status).toBe('won');
-    expect(r.stars).toBe(1);
+    expect(r.stars).toBe(2);
     expect(r.bonusStar).toBe(false);
   });
 
