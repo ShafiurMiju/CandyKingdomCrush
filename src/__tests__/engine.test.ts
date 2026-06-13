@@ -11,6 +11,7 @@ import {
   completionRatio,
   evaluateLevel,
   isTimedLevel,
+  liveStars,
   starsForScore,
   starsForTime,
 } from '../game-engine/LevelEngine';
@@ -140,6 +141,13 @@ describe('LevelEngine — move/score stars (finish-at-target)', () => {
     expect(evaluateLevel(scoreLevel, board, 1500, {movesLeft: 0})).toMatchObject(
       {status: 'lost', stars: 0, bonusStar: false},
     );
+  });
+
+  it('live stars reflect current standing (0 at start, climb with score)', () => {
+    expect(liveStars(scoreLevel, board, 0)).toBe(0); // no false promise at 0
+    expect(liveStars(scoreLevel, board, 1600)).toBe(1); // 0.8x
+    expect(liveStars(scoreLevel, board, 2400)).toBe(3); // 1.2x
+    expect(liveStars(timeLevel, board, 1000)).toBe(1); // 50% complete
   });
 });
 

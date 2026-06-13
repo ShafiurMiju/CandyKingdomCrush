@@ -7,10 +7,15 @@
 
 import React from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import {isTimedLevel, objectiveProgress} from '../game-engine/LevelEngine';
+import {
+  isTimedLevel,
+  liveStars,
+  objectiveProgress,
+} from '../game-engine/LevelEngine';
 import {palette, radius, shadow, spacing} from '../constants/theme';
 import {useGameStore} from '../store/gameStore';
 import {formatScore, formatSeconds} from '../utils/helpers';
+import StarRating from './StarRating';
 
 interface GameHUDProps {
   onPause: () => void;
@@ -31,6 +36,8 @@ export default function GameHUD({onPause}: GameHUDProps) {
   const progress = objectiveProgress(level, board, score);
   const ratio =
     progress.target > 0 ? Math.min(1, progress.current / progress.target) : 0;
+  // Stars secured so far (climbs as you score; auto-play lifts it at the end).
+  const stars = liveStars(level, board, score);
 
   return (
     <View style={styles.container}>
@@ -76,6 +83,11 @@ export default function GameHUD({onPause}: GameHUDProps) {
         </View>
         <View style={styles.progressTrack}>
           <View style={[styles.progressFill, {width: `${ratio * 100}%`}]} />
+        </View>
+
+        <View style={styles.starsRow}>
+          <Text style={styles.starsLabel}>Stars</Text>
+          <StarRating stars={stars} size={16} />
         </View>
       </View>
     </View>
@@ -213,5 +225,19 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 5,
     backgroundColor: palette.success,
+  },
+  starsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: spacing.sm,
+  },
+  starsLabel: {
+    color: palette.textMuted,
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    marginRight: spacing.sm,
   },
 });

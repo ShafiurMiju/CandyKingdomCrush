@@ -29,6 +29,7 @@ export {
   bonusStarForScore,
   bonusStarForTime,
   completionRatio,
+  liveStars,
   isTimedLevel,
   objectiveProgress,
   countIceLayers,

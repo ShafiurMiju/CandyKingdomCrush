@@ -194,6 +194,26 @@ export function completionRatio(
   return p.target > 0 ? Math.min(1, p.current / p.target) : 0;
 }
 
+/**
+ * Stars (0..3) the player has secured RIGHT NOW — drives the live HUD meter.
+ * Honest current standing (no forward projection): starts at 0 and climbs with
+ * the score (move levels) or objective completion (time levels). On move
+ * levels the end-of-level auto-play then lifts it to the final rating.
+ */
+export function liveStars(
+  level: LevelConfig,
+  board: Board,
+  score: number,
+): number {
+  if (isTimedLevel(level)) {
+    if (isObjectiveComplete(level, board, score)) {
+      return 3;
+    }
+    return starsForTime(false, completionRatio(level, board, score));
+  }
+  return starsForScore(score, level.targetScore);
+}
+
 /** Context the evaluator needs about the two bounding modes. */
 export interface EvalContext {
   /** Swaps remaining (move levels). */
